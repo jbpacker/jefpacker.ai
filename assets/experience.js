@@ -49,6 +49,14 @@
   cacheDotOffsets();
   requestAnimationFrame(update);
 
+  // Recache after fonts finish loading — @font-face swaps change entry heights and shift dot positions
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      cacheDotOffsets();
+      requestAnimationFrame(update);
+    });
+  }
+
   var ticking = false;
   window.addEventListener('scroll', function () {
     if (ticking) return;
