@@ -28,7 +28,7 @@
     }
   }
 
-  update();
+  requestAnimationFrame(update);
 
   var ticking = false;
   window.addEventListener('scroll', function () {
