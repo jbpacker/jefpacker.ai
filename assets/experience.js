@@ -33,6 +33,11 @@
       if (dotOffsets[i] <= lineHeight) idx = i;
     }
 
+    // Near-bottom: activate last entry when within 60vh of page bottom
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - window.innerHeight * 0.6) {
+      idx = entries.length - 1;
+    }
+
     entries.forEach(function (entry, i) {
       entry.classList.toggle('past',    i < idx);
       entry.classList.toggle('current', i === idx);
