@@ -33,8 +33,9 @@
       if (dotOffsets[i] <= lineHeight) idx = i;
     }
 
-    // Near-bottom: activate last entry when within 60vh of page bottom
-    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - window.innerHeight * 0.6) {
+    // Activate last entry when its dot is visible in the viewport (below trigger but on screen)
+    var lastDotViewY = dotOffsets[dotOffsets.length - 1] + tlRect.top;
+    if (lastDotViewY < window.innerHeight) {
       idx = entries.length - 1;
     }
 
