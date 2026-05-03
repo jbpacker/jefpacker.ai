@@ -170,3 +170,90 @@ a {
 a:hover {
   color: var(--color-text, #f0ede6);
 }
+
+/* ============================================================
+   4. Layout
+   ============================================================ */
+
+.page-layout {
+  width: 100%;
+  max-width: calc(var(--max-width, 72ch) + var(--space-xl, 2.5rem) * 2);
+  margin-inline: auto;
+  padding-inline: var(--space-xl, 2.5rem);
+  padding-block: var(--space-2xl, 4rem);
+}
+
+/* ============================================================
+   5. Components
+   ============================================================ */
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  padding: var(--space-sm, 0.5rem) var(--space-md, 1rem);
+  background-color: var(--color-accent, #c8a96e);
+  color: var(--color-bg, #111318);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 999;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Nav */
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md, 1rem);
+  padding-inline: var(--space-xl, 2.5rem);
+  padding-block: var(--space-lg, 1.5rem);
+  border-bottom: 1px solid var(--color-border, #2a2d35);
+}
+
+.nav-logo {
+  font-family: var(--font-heading, Georgia, serif);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 700;
+  color: var(--color-text, #f0ede6);
+  text-decoration: none;
+}
+
+.nav-logo:hover {
+  color: var(--color-accent, #c8a96e);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-xl, 2.5rem);
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #8a8680);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--color-text, #f0ede6);
+}
+
+/* Footer */
+.site-footer {
+  padding-inline: var(--space-xl, 2.5rem);
+  padding-block: var(--space-2xl, 4rem);
+  border-top: 1px solid var(--color-border, #2a2d35);
+}
