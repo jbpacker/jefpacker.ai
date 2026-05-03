@@ -257,3 +257,56 @@ a:hover {
   padding-block: var(--space-2xl, 4rem);
   border-top: 1px solid var(--color-border, #2a2d35);
 }
+
+/* ============================================================
+   6. Utilities
+   ============================================================ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   7. Animations & Transitions
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  a, button {
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+}
+
+/* ============================================================
+   8. Media Queries (mobile-first)
+   ============================================================ */
+
+/* Desktop: 1024px+ */
+@media (min-width: 64rem) {
+  h1 {
+    font-size: var(--font-size-3xl, 2.75rem);
+  }
+
+  .nav-links {
+    gap: var(--space-2xl, 4rem);
+  }
+
+  .page-layout {
+    padding-inline: var(--space-2xl, 4rem);
+    padding-block: var(--space-2xl, 4rem);
+  }
+}
+
+/* Focus indicators — never suppress, keyboard users only */
+:focus-visible {
+  outline: 2px solid var(--color-accent, #c8a96e);
+  outline-offset: 3px;
+  border-radius: var(--border-radius, 4px);
+}
