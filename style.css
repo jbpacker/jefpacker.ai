@@ -449,7 +449,6 @@ a:hover {
 .timeline {
   position: relative;
   padding-left: 1.75rem; /* 28px — space for line + dot + gap */
-  overflow-anchor: none; /* prevent scroll anchoring from fighting JS line-height updates */
 }
 
 .timeline-line {
@@ -458,21 +457,11 @@ a:hover {
   top: 0;
   bottom: 0;
   width: 1px;
-  display: flex;
-  flex-direction: column;
-}
-
-.timeline-line-top {
-  flex: 0 0 auto;
-  width: 1px;
-  height: 0; /* set by experience.js */
-  background: var(--color-accent);
-}
-
-.timeline-line-bot {
-  flex: 1;
-  width: 1px;
-  background: var(--color-border);
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-accent) var(--tl-progress, 0px),
+    var(--color-border) var(--tl-progress, 0px)
+  );
 }
 
 .timeline-entry {
@@ -543,5 +532,4 @@ a:hover {
     transition: background 0.2s ease, box-shadow 0.2s ease;
   }
 
-  /* no height transition on timeline-line-top — updated every scroll frame, transition adds lag */
 }

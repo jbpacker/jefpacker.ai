@@ -1,38 +1,37 @@
 (function () {
   var entries = Array.from(document.querySelectorAll('.timeline-entry'));
-  var lineTop = document.querySelector('.timeline-line-top');
   var timeline = document.querySelector('.timeline');
 
-  if (!entries.length || !lineTop || !timeline) return;
+  if (!entries.length || !timeline) return;
 
-  // Suppress smooth-scroll during initial load so browser scroll restoration
-  // doesn't animate and appear as a page jump
-  document.documentElement.style.scrollBehavior = 'auto';
-  requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      document.documentElement.style.scrollBehavior = '';
-    });
-  });
+  // Prevent browser scroll restoration from animating (causes visible page jump on back-nav)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-  function update() {
-    var triggerY = window.innerHeight * 0.4;
-    var tlRect = timeline.getBoundingClientRect();
-
-    // Batch all reads before any writes
-    var dotMids = entries.map(function (entry) {
+  // Cache dot positions relative to timeline top — recomputed on resize only, not per frame
+  var dotOffsets = [];
+  function cacheDotOffsets() {
+    var tlTop = timeline.getBoundingClientRect().top + window.scrollY;
+    dotOffsets = entries.map(function (entry) {
       var dot = entry.querySelector('.timeline-dot');
       var r = dot.getBoundingClientRect();
-      return r.top + r.height / 2;
+      return r.top + r.height / 2 + window.scrollY - tlTop;
     });
+  }
 
-    // Current entry = last dot whose midpoint has reached the trigger
+  function update() {
+    // One getBoundingClientRect() per frame (was 16)
+    var tlRect = timeline.getBoundingClientRect();
+    var triggerY = window.innerHeight * 0.4;
+    var lineHeight = Math.max(0, triggerY - tlRect.top);
+
+    // Update gradient stop via CSS custom property — no flex reflow
+    timeline.style.setProperty('--tl-progress', lineHeight + 'px');
+
+    // Find current entry using cached offsets — pure arithmetic, no layout reads
     var idx = 0;
-    for (var i = 0; i < dotMids.length; i++) {
-      if (dotMids[i] <= triggerY) idx = i;
+    for (var i = 0; i < dotOffsets.length; i++) {
+      if (dotOffsets[i] <= lineHeight) idx = i;
     }
-
-    // Write: line height continuously tracks viewport position (not dot position)
-    lineTop.style.height = Math.max(0, triggerY - tlRect.top) + 'px';
 
     entries.forEach(function (entry, i) {
       entry.classList.toggle('past',    i < idx);
@@ -41,15 +40,18 @@
     });
   }
 
+  cacheDotOffsets();
   requestAnimationFrame(update);
 
   var ticking = false;
   window.addEventListener('scroll', function () {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(function () {
-      update();
-      ticking = false;
-    });
+    requestAnimationFrame(function () { update(); ticking = false; });
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    cacheDotOffsets();
+    requestAnimationFrame(update);
   }, { passive: true });
 })();
