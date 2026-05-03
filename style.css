@@ -449,6 +449,7 @@ a:hover {
 .timeline {
   position: relative;
   padding-left: 1.75rem; /* 28px — space for line + dot + gap */
+  overflow-anchor: none; /* prevent scroll anchoring from fighting JS line-height updates */
 }
 
 .timeline-line {
@@ -542,7 +543,5 @@ a:hover {
     transition: background 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .timeline-line-top {
-    transition: height 0.1s ease;
-  }
+  /* no height transition on timeline-line-top — updated every scroll frame, transition adds lag */
 }
