@@ -428,3 +428,108 @@ a:hover {
   outline-offset: 3px;
   border-radius: var(--border-radius, 4px);
 }
+
+/* ============================================================
+   9. Timeline
+   ============================================================ */
+
+.timeline {
+  position: relative;
+  padding-left: 1.75rem; /* 28px — space for line + dot + gap */
+}
+
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-line-top {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 0; /* set by experience.js */
+  background: var(--color-accent);
+}
+
+.timeline-line-bot {
+  flex: 1;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.timeline-entry {
+  position: relative;
+  padding-bottom: var(--space-xl);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: calc(-1.75rem - 3px); /* pull left edge 3px past container edge to center 7px dot on 1px line */
+  top: 0.3em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.timeline-entry.past .timeline-dot {
+  background: var(--color-accent);
+}
+
+.timeline-entry.current .timeline-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 3.5px var(--color-accent);
+}
+
+/* Scope opacity to non-interactive children — links stay fully opaque for WCAG contrast */
+.timeline-entry.future .timeline-dot,
+.timeline-entry.future .timeline-date,
+.timeline-entry.future h3,
+.timeline-entry.future p {
+  opacity: 0.7;
+}
+
+/* .timeline-date extends .mono; only overrides that differ are listed here */
+.timeline-date {
+  display: block;
+  color: var(--color-accent); /* overrides .mono's --color-muted */
+  margin-bottom: var(--space-xs);
+}
+
+.timeline-content h3 {
+  margin-bottom: var(--space-sm);
+}
+
+.timeline-content p {
+  color: var(--color-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.timeline-content p + p {
+  margin-top: calc(-1 * var(--space-xs)); /* tighten consecutive paragraphs */
+}
+
+.timeline-content a {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-entry {
+    transition: opacity 0.2s ease;
+  }
+
+  .timeline-dot {
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .timeline-line-top {
+    transition: height 0.1s ease;
+  }
+}
