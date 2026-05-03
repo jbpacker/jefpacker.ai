@@ -300,7 +300,7 @@ a:hover {
 }
 
 .hero-tagline {
-  font-size: var(--font-size-lg, 1.125rem);
+  font-size: clamp(var(--font-size-sm, 0.875rem), 2vw, var(--font-size-lg, 1.125rem));
   color: var(--color-muted, #8a8680);
   max-width: 48ch;
 }
