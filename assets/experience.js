@@ -5,27 +5,40 @@
 
   if (!entries.length || !lineTop || !timeline) return;
 
+  // Suppress smooth-scroll during initial load so browser scroll restoration
+  // doesn't animate and appear as a page jump
+  document.documentElement.style.scrollBehavior = 'auto';
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      document.documentElement.style.scrollBehavior = '';
+    });
+  });
+
   function update() {
     var triggerY = window.innerHeight * 0.4;
-    var idx = 0;
+    var tlRect = timeline.getBoundingClientRect();
 
-    for (var i = 0; i < entries.length; i++) {
-      if (entries[i].getBoundingClientRect().top <= triggerY) idx = i;
+    // Batch all reads before any writes
+    var dotMids = entries.map(function (entry) {
+      var dot = entry.querySelector('.timeline-dot');
+      var r = dot.getBoundingClientRect();
+      return r.top + r.height / 2;
+    });
+
+    // Current entry = last dot whose midpoint has reached the trigger
+    var idx = 0;
+    for (var i = 0; i < dotMids.length; i++) {
+      if (dotMids[i] <= triggerY) idx = i;
     }
+
+    // Write: line height continuously tracks viewport position (not dot position)
+    lineTop.style.height = Math.max(0, triggerY - tlRect.top) + 'px';
 
     entries.forEach(function (entry, i) {
       entry.classList.toggle('past',    i < idx);
       entry.classList.toggle('current', i === idx);
       entry.classList.toggle('future',  i > idx);
     });
-
-    var dot = entries[idx].querySelector('.timeline-dot');
-    if (dot) {
-      var tlRect = timeline.getBoundingClientRect();
-      var dotRect = dot.getBoundingClientRect();
-      var height = dotRect.top + dotRect.height / 2 - tlRect.top;
-      lineTop.style.height = Math.max(0, height) + 'px';
-    }
   }
 
   requestAnimationFrame(update);
