@@ -1,8 +1,3 @@
-rocket.src = 'assets/rocket.svg';
-planet.src = 'assets/planet.png';
-
-init();
-
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
 
