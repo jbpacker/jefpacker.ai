@@ -537,7 +537,7 @@ a:hover {
 .timeline-close {
   margin-top: var(--space-2xl);
   padding-top: var(--space-2xl);
-  padding-bottom: 35vh; /* scroll budget so line reaches last dot */
+  padding-bottom: 10vh; /* scroll budget so line reaches last dot */
   border-top: 1px solid var(--color-border);
   text-align: center;
 }
