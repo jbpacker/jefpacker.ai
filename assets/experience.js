@@ -22,7 +22,10 @@
     // One getBoundingClientRect() per frame (was 16)
     var tlRect = timeline.getBoundingClientRect();
     var triggerY = window.innerHeight * 0.4;
-    var lineHeight = Math.max(0, triggerY - tlRect.top);
+    var lineHeight = Math.min(
+      Math.max(0, triggerY - tlRect.top),
+      dotOffsets[dotOffsets.length - 1]
+    );
 
     // Find current entry using cached offsets — pure arithmetic, no layout reads
     var idx = 0;
