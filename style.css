@@ -449,6 +449,12 @@ a:hover {
 .timeline {
   position: relative;
   padding-left: 1.75rem; /* 28px — space for line + dot + gap */
+  padding-bottom: 55vh; /* scroll space so line can naturally reach the last dot */
+}
+
+.timeline-entry:last-child {
+  position: sticky;
+  top: calc(40vh - 0.3em); /* last entry sticks when its dot aligns with the trigger */
 }
 
 .timeline-line {

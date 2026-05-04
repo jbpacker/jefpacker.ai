@@ -30,14 +30,7 @@
       if (dotOffsets[i] <= lineHeight) idx = i;
     }
 
-    // When last entry's dot is visible below the trigger, activate it and extend line to reach it
-    var lastDotViewY = dotOffsets[dotOffsets.length - 1] + tlRect.top;
-    if (lastDotViewY < window.innerHeight) {
-      idx = entries.length - 1;
-      lineHeight = Math.max(lineHeight, dotOffsets[dotOffsets.length - 1]);
-    }
-
-    // Apply line height after all adjustments
+    // Update gradient stop via CSS custom property — no flex reflow
     timeline.style.setProperty('--tl-progress', lineHeight + 'px');
 
     entries.forEach(function (entry, i) {
