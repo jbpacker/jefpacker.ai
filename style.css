@@ -449,12 +449,6 @@ a:hover {
 .timeline {
   position: relative;
   padding-left: 1.75rem; /* 28px — space for line + dot + gap */
-  padding-bottom: 55vh; /* scroll space so line can naturally reach the last dot */
-}
-
-.timeline-entry:last-child {
-  position: sticky;
-  top: calc(40vh - 0.3em); /* last entry sticks when its dot aligns with the trigger */
 }
 
 .timeline-line {
@@ -538,4 +532,22 @@ a:hover {
     transition: background 0.2s ease, box-shadow 0.2s ease;
   }
 
+}
+
+.timeline-close {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-2xl);
+  padding-bottom: 35vh; /* scroll budget so line reaches last dot */
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.timeline-close p {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  color: var(--color-muted);
+  max-width: 36ch;
+  margin-inline: auto;
+  line-height: var(--line-height-normal);
 }
