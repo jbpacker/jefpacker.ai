@@ -15,6 +15,7 @@
   --font-body:    'IBM Plex Sans', system-ui, sans-serif;
   --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
 
+  --font-size-xs:   0.75rem;
   --font-size-sm:   0.875rem;
   --font-size-base: 1rem;
   --font-size-lg:   1.125rem;
@@ -698,7 +699,7 @@ a:hover {
 
 .pub-authors {
   font-family: var(--font-mono, 'IBM Plex Mono', 'Courier New', monospace);
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--font-size-xs, 0.75rem);
   color: var(--color-muted, #8a8680);
   margin-bottom: var(--space-xs, 0.25rem);
   line-height: var(--line-height-normal, 1.6);
