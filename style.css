@@ -800,6 +800,10 @@ button.patent-row {
   width: 100%;
   text-align: left;
   cursor: pointer;
+  color: var(--color-accent, #c8a96e);
+  font-family: var(--font-mono, 'IBM Plex Mono', 'Courier New', monospace);
+  font-size: var(--font-size-sm, 0.875rem);
+  justify-content: flex-start;
 }
 
 .patents-footer {
