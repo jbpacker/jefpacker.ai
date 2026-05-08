@@ -460,7 +460,9 @@ a:hover {
   background-image: linear-gradient(
     to bottom,
     var(--color-accent) var(--tl-progress, 0px),
-    var(--color-border) var(--tl-progress, 0px)
+    var(--color-border) var(--tl-progress, 0px),
+    var(--color-border) var(--tl-line-end, 100%),
+    transparent var(--tl-line-end, 100%)
   );
 }
 

@@ -16,6 +16,8 @@
       var r = dot.getBoundingClientRect();
       return r.top + r.height / 2 + window.scrollY - tlTop;
     });
+    // Set line end so gradient cuts off below the last dot
+    timeline.style.setProperty('--tl-line-end', dotOffsets[dotOffsets.length - 1] + 'px');
   }
 
   function update() {
