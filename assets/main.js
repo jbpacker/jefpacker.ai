@@ -7,3 +7,9 @@ if (navToggle && navLinks) {
     navToggle.setAttribute('aria-expanded', String(isOpen));
   });
 }
+
+document.querySelectorAll('.patent-row-collapse').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('details').removeAttribute('open');
+  });
+});

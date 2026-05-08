@@ -790,7 +790,16 @@ details.patent-list-more > summary.patent-row::marker {
 }
 
 details.patent-list-more[open] > summary.patent-row {
+  display: none;
+}
+
+button.patent-row {
+  background: none;
+  border: none;
   border-bottom: 1px solid var(--color-border, #2a2d35);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
 .patents-footer {
