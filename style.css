@@ -199,6 +199,14 @@ a:hover {
   margin-bottom: var(--space-xl);
 }
 
+.page-layout p:not([class]) {
+  margin-bottom: var(--space-md);
+}
+
+.page-layout section + section {
+  margin-top: var(--space-2xl);
+}
+
 /* ============================================================
    5. Components
    ============================================================ */
