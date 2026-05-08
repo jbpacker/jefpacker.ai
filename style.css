@@ -714,8 +714,7 @@ a:hover {
 /* Patents */
 
 .patent-list {
-  border: 1px solid var(--color-border, #2a2d35);
-  border-radius: var(--border-radius, 4px);
+  border-top: 1px solid var(--color-border, #2a2d35);
   margin-bottom: var(--space-xl, 2.5rem);
 }
 
