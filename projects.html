@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Jef Packer's open-source projects and publications — RRT path planning, a surname generator, DreamBooth fine-tuning, and an automated meeting notes app.">
+  <title>Projects — Jef Packer</title>
+  <link rel="canonical" href="https://jefpacker.ai/projects.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Projects — Jef Packer">
+  <meta property="og:description" content="Open-source projects and publications: RRT path planning, surname generator, DreamBooth fine-tuning, and automated meeting notes.">
+  <meta property="og:image" content="https://jefpacker.ai/assets/og-card.png">
+  <meta property="og:image:alt" content="Jef Packer — ML Engineer and Roboticist">
+  <meta property="og:url" content="https://jefpacker.ai/projects.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://jefpacker.ai"},
+      {"@type": "ListItem", "position": 2, "name": "Projects", "item": "https://jefpacker.ai/projects.html"}
+    ]
+  }
+  </script>
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="font" href="assets/fonts/playfair-display-700.woff2" type="font/woff2" crossorigin>
+  <link rel="prefetch" href="about.html">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="assets/main.js" defer></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="/" class="nav-logo">Jef Packer</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
+      <svg class="icon-open" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <svg class="icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="experience.html">experience</a></li>
+      <li><a href="projects.html" aria-current="page">projects</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" class="page-layout">
+    <header>
+      <h1>Projects &amp; Publications</h1>
+      <p>Things I built to learn by doing, and research I contributed to along the way.</p>
+    </header>
+
+    <section aria-label="Open-Source Projects">
+      <h2 class="section-label">Open-Source</h2>
+
+      <article class="project-card">
+        <h3 class="project-heading">Rocketship RRT</h3>
+        <img
+          class="project-image"
+          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e6d0e168bea5cf89ef0d87_Screenshot%202023-02-10%20at%203.18.41%20PM.png"
+          alt="Rocketship RRT screenshot showing a search tree expanding toward an orbiting planet"
+          loading="lazy"
+          width="1662"
+          height="934"
+        >
+        <p class="project-desc">A Javascript implementation of a Rapidly-Exploring Random Tree (RRT). The rocket ship uses a search tree to decide how to move around in space and get as close as possible to an orbiting planet.</p>
+        <div class="card-links">
+          <a href="https://www.jefpacker.ai/" class="btn">See it in action</a>
+          <a href="https://github.com/jbpacker/paths" class="btn btn-outline">GitHub →</a>
+        </div>
+        <h4 class="project-detail-heading">Challenges</h4>
+        <p class="project-detail-body">Determining a simple and decent search methodology was tricky. I created a node queue prioritized by Euclidean distance to the planet. The Euclidean metric causes problems where the closest node can point away from the planet, making that path more costly than others.</p>
+        <h4 class="project-detail-heading">What I Learned</h4>
+        <p class="project-detail-body">I had never written code for a website before, so this was a fun opportunity to write JavaScript and understand how it integrates with HTML and no-code platforms like Webflow.</p>
+      </article>
+
+      <article class="project-card">
+        <h3 class="project-heading">Surnamerator</h3>
+        <img
+          class="project-image"
+          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e6d9003fb036d51bba8a2d_Screenshot%202023-02-10%20at%203.53.21%20PM.png"
+          alt="Surnamerator app screenshot showing a surname generation interface"
+          loading="lazy"
+          width="1388"
+          height="780"
+        >
+        <p class="project-desc">A last name generator powered by a small language model (SLM), inspired by my partner's desire for a new surname.</p>
+        <div class="card-links">
+          <a href="https://huggingface.co/spaces/jefsnacker/surnamerator" class="btn">See it in action</a>
+          <a href="https://github.com/jbpacker/surnamerator" class="btn btn-outline">GitHub →</a>
+        </div>
+        <h4 class="project-detail-heading">Challenges</h4>
+        <p class="project-detail-body">My partner wanted control over the first and final characters of generated names. First characters were easy — initialize the prompt with them. Final characters were harder. I modified the dataset to embed "hints" of the final characters before the regular model input, giving the transformer enough context to predict the ending correctly. It worked remarkably well.</p>
+        <h4 class="project-detail-heading">What I Learned</h4>
+        <p class="project-detail-body">I got my hands dirty coding a transformer from scratch, something I had only used via libraries or read about in papers before this project.</p>
+        <h4 class="project-detail-heading">Resources</h4>
+        <p class="project-detail-body">Special thanks to Andrej Karpathy for inspiring this project with his <a href="https://karpathy.ai/zero-to-hero.html">Zero-to-Hero series</a>.</p>
+      </article>
+
+      <article class="project-card">
+        <h3 class="project-heading">Azriel Dreambooth</h3>
+        <div class="project-image-grid">
+          <img
+            src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e7faa0f173055e9ef7b57b_poof%20god_SwinIR_large.png"
+            alt="AI-generated portrait of Azriel the cat"
+            loading="lazy"
+            width="775"
+            height="775"
+          >
+          <img
+            src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e7053bbe8e5cc86ab87e88_azzy18.jpeg"
+            alt="Real photo of Azriel the cat"
+            loading="lazy"
+            width="512"
+            height="512"
+          >
+          <img
+            src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e6defc476e8dd390ff32ef_Screen%20Shot%202022-12-07%20at%201.13.10%20AM.png"
+            alt="AI-generated portrait of Azriel the cat"
+            loading="lazy"
+            width="1212"
+            height="1212"
+          >
+          <img
+            src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e6decd476e8d21aaff3070_rainbow%209.png"
+            alt="AI-generated rainbow portrait of Azriel the cat"
+            loading="lazy"
+            width="523"
+            height="523"
+          >
+        </div>
+        <p class="project-desc">I used DreamBooth to fine-tune a Stable Diffusion model on my cat Azriel and generate a huge variety of AI portraits. Can you tell which is the real photo?</p>
+        <div class="card-links">
+          <a href="https://huggingface.co/jefsnacker/azzy" class="btn">See it in action</a>
+          <a href="https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/sd_dreambooth_training.ipynb" class="btn btn-outline">Colab notebook →</a>
+        </div>
+        <h4 class="project-detail-heading">Challenges</h4>
+        <p class="project-detail-body">Determining training hyperparameters was a huge undertaking. I <a href="https://jefsnacker.medium.com/dreambooth-hyperparameter-guide-d8b7cd264245">wrote a Medium article</a> outlining the configurations that worked well.</p>
+        <h4 class="project-detail-heading">What I Learned</h4>
+        <p class="project-detail-body">Getting hands-on experience with diffusion models was great. I got a reminder of the importance of experiment tracking — notating training images, steps, and learning rate helped me produce more consistent results.</p>
+        <h4 class="project-detail-heading">Resources</h4>
+        <p class="project-detail-body">The <a href="https://github.com/huggingface/diffusion-models-class#">HuggingFace diffusers class</a> provided a great foundation. The Azriel model won 2nd place in their DreamBooth competition.</p>
+      </article>
+
+      <article class="project-card">
+        <h3 class="project-heading">Scribe</h3>
+        <img
+          class="project-image"
+          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/63e6e55e60afc2858e854400_Screenshot%202023-02-10%20at%204.46.11%20PM.png"
+          alt="Scribe app screenshot showing automated meeting notes interface"
+          loading="lazy"
+          width="1813"
+          height="1020"
+        >
+        <p class="project-desc">For AssemblyAI's Winter Hackathon, I built Scribe — an automated meeting note-taking app that lets users focus on calls and quickly catch up on anything they missed.</p>
+        <div class="card-links">
+          <a href="https://devpost.com/software/scribe-qvte7g" class="btn">See it in action</a>
+          <a href="https://github.com/jbpacker/scribe" class="btn btn-outline">GitHub →</a>
+        </div>
+        <h4 class="project-detail-heading">Challenges</h4>
+        <p class="project-detail-body">The hackathon was only two days. One core challenge was getting real-time data from web conferencing software — Zoom, Meet, and others don't expose good APIs for this. I ended up using a plugin that read subtitles off a live Google Meet page. Getting raw audio would have made a much better product.</p>
+        <h4 class="project-detail-heading">What I Learned</h4>
+        <p class="project-detail-body">Surprisingly, all the AI-related parts felt trivial. The hardest aspects were building the website and piping data around. Never underestimate boilerplate code.</p>
+      </article>
+
+    </section>
+
+    <section aria-label="Publications">
+      <h2 class="section-label">Publications</h2>
+
+      <article class="pub-card">
+        <h3 class="pub-title">Beyond Behavior Cloning in Autonomous Driving: A Survey of Closed-Loop Training Techniques</h3>
+        <p class="pub-authors">P. Karkus, M. Igl, Y. Chen, K. Chitta, <strong>J. Packer</strong>, B. Douillard, T. Tian, A. Naumann, G. Garcia-Cobo, S. Tan, A. Degirmenci, A. Popov, N. Smolyanskiy, U. Muller, B. Ivanovic, M. Pavone</p>
+        <p class="pub-venue">Tech Report · 2025</p>
+        <div class="card-links">
+          <a href="https://d1qx31qr3h6wln.cloudfront.net/publications/beyond_bc_survey_preprint.pdf" class="btn">PDF</a>
+          <a href="https://research.nvidia.com/publication/2025-12_beyond-behavior-cloning-autonomous-driving-survey-closed-loop-training" class="btn btn-outline">Paper page →</a>
+        </div>
+      </article>
+
+    </section>
+  </main>
+</body>
+</html>
