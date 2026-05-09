@@ -575,6 +575,12 @@ a:hover {
   margin-bottom: var(--space-sm);
 }
 
+.photo-aside-wrap > div {
+  order: 1;
+  flex: 1;
+  min-width: 0;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .timeline-entry {
     transition: opacity 0.2s ease;
