@@ -211,20 +211,34 @@ a:hover {
   display: flow-root;
 }
 
+.photo-aside-wrap {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-md);
+}
+
 .photo-aside {
   width: 100%;
   height: auto;
   border-radius: var(--border-radius, 4px);
   display: block;
-  margin-bottom: var(--space-md);
 }
 
 @media (min-width: 40rem) {
+  .photo-aside-wrap {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-xl);
+  }
+
   .photo-aside {
-    float: right;
     width: 45%;
-    margin-left: var(--space-xl);
-    margin-bottom: var(--space-sm);
+    flex-shrink: 0;
+    order: 2;
+  }
+
+  .photo-aside-wrap p {
+    order: 1;
   }
 }
 
