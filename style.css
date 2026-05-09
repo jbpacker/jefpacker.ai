@@ -207,6 +207,27 @@ a:hover {
   margin-top: var(--space-2xl);
 }
 
+.page-layout section {
+  display: flow-root;
+}
+
+.photo-aside {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius, 4px);
+  display: block;
+  margin-bottom: var(--space-md);
+}
+
+@media (min-width: 40rem) {
+  .photo-aside {
+    float: right;
+    width: 45%;
+    margin-left: var(--space-xl);
+    margin-bottom: var(--space-sm);
+  }
+}
+
 /* ============================================================
    5. Components
    ============================================================ */
