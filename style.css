@@ -219,9 +219,15 @@ a:hover {
 
 .photo-aside {
   width: 100%;
-  height: auto;
   border-radius: var(--border-radius, 4px);
   display: block;
+}
+
+.photo-aside img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: inherit;
 }
 
 @media (min-width: 40rem) {
@@ -679,15 +685,14 @@ a:hover {
 
 .project-image-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-sm, 0.5rem);
   margin-bottom: var(--space-md, 1rem);
 }
 
-@media (min-width: 40rem) {
-  .project-image-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+.project-image-grid picture {
+  display: block;
+  min-width: 0;
 }
 
 .project-image-grid img {

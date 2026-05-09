@@ -68,14 +68,16 @@
     <section aria-label="Snowboarding">
       <h2 class="section-label">Snowboarding</h2>
       <div class="photo-aside-wrap">
-        <img
-          class="photo-aside"
-          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/61247d6c14a91f6d40c94b34_snow.jpeg"
-          alt="Snowboarding in the backcountry"
-          loading="lazy"
-          width="1600"
-          height="1200"
-        >
+        <picture class="photo-aside">
+          <source srcset="assets/snow.webp" type="image/webp">
+          <img
+            src="assets/snow.jpeg"
+            alt="Snowboarding in the backcountry"
+            loading="lazy"
+            width="1600"
+            height="1200"
+          >
+        </picture>
         <p>I've been snowboarding for over 20 years. I'm AIARE certified for avalanche safety in the backcountry. I have snowboarded in France, Canada, Utah, Colorado, California, and Japan.</p>
       </div>
     </section>
@@ -85,20 +87,26 @@
       <p>I'm an avid traveler and have enjoyed time in Thailand, Nepal, India, Kyrgyzstan, Malaysia, Croatia, South Africa, and Botswana. I also lived in England for a year when I worked at Rolls-Royce.</p>
       <p>When traveling, scooters and motorcycles are my preferred method of transportation. My favorite things to experience in other countries are trekking and SCUBA diving.</p>
       <div class="project-image-grid">
-        <img
-          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/637d1812e3a11046d5aef294_IMG_8800.jpeg"
-          alt="Zojila pass in India"
-          loading="lazy"
-          width="1600"
-          height="1200"
-        >
-        <img
-          src="https://cdn.prod.website-files.com/612292ecc8ee4caae75526b9/626f19d4a885cbb44ef4ff7a_IMG_2252.jpeg"
-          alt="Scootering to the white temple in Thailand"
-          loading="lazy"
-          width="1600"
-          height="1200"
-        >
+        <picture>
+          <source srcset="assets/zojila.webp" type="image/webp">
+          <img
+            src="assets/zojila.jpeg"
+            alt="Zojila pass in India"
+            loading="lazy"
+            width="1600"
+            height="1200"
+          >
+        </picture>
+        <picture>
+          <source srcset="assets/white-temple.webp" type="image/webp">
+          <img
+            src="assets/white-temple.jpeg"
+            alt="Scootering to the white temple in Thailand"
+            loading="lazy"
+            width="1600"
+            height="1200"
+          >
+        </picture>
       </div>
     </section>
   </main>
