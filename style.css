@@ -1015,6 +1015,10 @@ button.patent-row {
   .canvas-pane { order: 3; height: 70vh; position: relative; width: 100%; }
   .sidebar { order: 4; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
 
+  .link-handle { display: none; }
+  .link-row { padding: 9px 0; }
+  .links { gap: 0; }
+
   /* Hide desktop-only elements */
   .identity { display: none; }
   .statusbar { display: none; }
