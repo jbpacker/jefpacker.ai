@@ -996,11 +996,10 @@ button.patent-row {
     overflow: hidden;
   }
 
-  .app .topbar { order: 1; flex-shrink: 0; }
+  .app .topbar { flex-shrink: 0; }
 
   .mobile-bio {
     display: block;
-    order: 2;
     flex-shrink: 0;
     padding: 8px 16px;
     font-size: 11px;
@@ -1010,11 +1009,16 @@ button.patent-row {
     line-height: 1.6;
   }
 
-  /* Dissolve .main so canvas-pane and sidebar become direct flex children */
-  .main { display: contents; }
+  .main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    order: 3;
+  }
 
-  .canvas-pane { order: 3; flex: 1; min-height: 0; position: relative; width: 100%; }
-  .sidebar { order: 4; flex-shrink: 0; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
+  .canvas-pane { flex: 1; min-height: 0; position: relative; width: 100%; }
+  .sidebar { flex-shrink: 0; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
 
   .link-handle { display: none; }
   .link-arrow { display: none; }
