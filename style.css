@@ -1017,8 +1017,8 @@ button.patent-row {
     order: 3;
   }
 
-  .canvas-pane { flex: 1; min-height: 0; position: relative; width: 100%; }
-  .sidebar { flex-shrink: 0; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
+  .canvas-pane { order: 1; flex: 1; min-height: 0; position: relative; width: 100%; }
+  .sidebar { order: 2; flex-shrink: 0; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
 
   .link-handle { display: none; }
   .link-arrow { display: none; }
