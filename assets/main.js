@@ -1,15 +1,16 @@
-const navToggle = document.querySelector('.nav-toggle');
-const navLinks = document.querySelector('.nav-links');
+var navToggle = document.getElementById('nav-toggle');
+var nav = document.getElementById('nav');
 
-if (navToggle && navLinks) {
-  navToggle.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('is-open');
+if (navToggle && nav) {
+  navToggle.addEventListener('click', function () {
+    var isOpen = nav.classList.toggle('is-open');
     navToggle.setAttribute('aria-expanded', String(isOpen));
+    navToggle.textContent = isOpen ? '✕' : '☰';
   });
 }
 
-document.querySelectorAll('.patent-row-collapse').forEach(btn => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll('.patent-row-collapse').forEach(function (btn) {
+  btn.addEventListener('click', function () {
     btn.closest('details').removeAttribute('open');
   });
 });
