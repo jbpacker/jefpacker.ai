@@ -196,7 +196,7 @@
       robot_sleep: 40,
       target_sleep: 40,
       finish_move: 5,
-      robot_step: 2,
+      robot_step: 1.5,
     },
     theme: null,
     canvas: null, ctx: null,
