@@ -206,7 +206,9 @@
 
     init(container, theme) {
       this.container = container;
+      this._defaultCfg = Object.assign({}, this.cfg);
       this.theme = theme;
+      if (theme.cfg) Object.assign(this.cfg, theme.cfg);
       this.canvas = document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d');
       this.resize();
@@ -231,7 +233,10 @@
       this.tree.update();
       this.robot.update();
     },
-    setTheme(theme) { this.theme = theme; },
+    setTheme(theme) {
+      this.theme = theme;
+      Object.assign(this.cfg, this._defaultCfg, theme.cfg || {});
+    },
     click(e) {
       const r = this.canvas.getBoundingClientRect();
       const p = new Position(e.clientX - r.left, e.clientY - r.top, 0);

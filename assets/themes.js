@@ -152,6 +152,7 @@ window.RRT_THEMES = {
     treeWidth: 1,
     pathColor: '#c8a96e',
     pathWidth: 1.5,
+    cfg: { robot_step: 1, robot_sleep: 70 },
     _planet: null,
     _rocket: null,
     _stars: null,
