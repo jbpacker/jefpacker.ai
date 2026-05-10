@@ -213,6 +213,9 @@
       this.ctx = this.canvas.getContext('2d');
       this.resize();
       window.addEventListener('resize', () => this.resize());
+      if (window.ResizeObserver) {
+        new ResizeObserver(() => this.resize()).observe(container);
+      }
       this.canvas.addEventListener('click', (e) => this.click(e));
       container.appendChild(this.canvas);
       this.start();
