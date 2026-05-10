@@ -46,7 +46,7 @@
     <div class="theme-switch" id="theme-switch">
       <button data-set="mission" class="on">~/mission</button>
       <button data-set="vapor">~/vapor</button>
-      <a href="index-classic.html" class="theme-classic">~/classic</a>
+      <button data-set="classic">~/classic</button>
     </div>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle navigation">☰</button>
     <nav class="nav" aria-label="Main navigation">
@@ -117,12 +117,12 @@
         <div class="hud-corners"></div>
         <span class="corner-tr"></span>
         <span class="corner-bl"></span>
-        <div class="hud-label hud-bl">RRT · click to retarget</div>
       </div>
     </section>
   </main>
 
   <footer class="statusbar" aria-label="Status">
+    <span class="statusbar-hint">RRT · click to retarget</span>
     <span class="spacer"></span>
     <span>© Jef Packer · 2026</span>
   </footer>
@@ -133,7 +133,7 @@
   <div class="drawer-theme" id="drawer-theme">
     <button data-set="mission" class="on">~/mission</button>
     <button data-set="vapor">~/vapor</button>
-    <a href="index-classic.html" class="theme-classic">~/classic</a>
+    <button data-set="classic">~/classic</button>
   </div>
   <nav class="drawer-nav">
     <a href="/" class="active">HOME</a>
@@ -151,7 +151,7 @@
 
   requestAnimationFrame(function () {
     const theme = document.documentElement.getAttribute('data-theme') || 'mission';
-    RRT.init(container, RRT_THEMES[theme]);
+    RRT.init(container, RRT_THEMES[theme] || RRT_THEMES['mission']);
 
     // Telemetry
     const elDist  = document.getElementById('t-dist');
@@ -187,7 +187,7 @@
     document.querySelectorAll('[data-set]').forEach(function (b) {
       b.classList.toggle('on', b.dataset.set === t);
     });
-    if (window.RRT && RRT_THEMES[t]) RRT.setTheme(RRT_THEMES[t]);
+    if (window.RRT) RRT.setTheme(RRT_THEMES[t] || RRT_THEMES['mission']);
   }
 
   document.getElementById('theme-switch').addEventListener('click', function (e) {

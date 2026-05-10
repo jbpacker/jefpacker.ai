@@ -107,6 +107,18 @@
   --accent-2:    #00f0ff;
 }
 
+[data-theme="classic"] {
+  --bg:          #111318;
+  --bg-2:        #1a1d24;
+  --border:      #2a2d35;
+  --border-soft: #1e2129;
+  --text:        #f0ede6;
+  --muted:       #8a8680;
+  --faint:       #4a4840;
+  --accent:      #c8a96e;
+  --accent-2:    #c8a96e;
+}
+
 [data-theme="vapor"] body {
   background: radial-gradient(ellipse at 50% 100%, #1a0633 0%, #0a0414 65%);
 }
@@ -337,6 +349,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .statusbar .spacer { flex: 1; }
+.statusbar-hint { margin-right: 16px; }
 
 /* Identity */
 .identity-name {
@@ -988,7 +1001,7 @@ button.patent-row {
   /* Dissolve .main so canvas-pane and sidebar become direct flex children */
   .main { display: contents; }
 
-  .canvas-pane { order: 3; height: 70vh; position: relative; }
+  .canvas-pane { order: 3; height: 70vh; position: relative; width: 100%; }
   .sidebar { order: 4; border-right: 0; border-bottom: 1px solid var(--border); padding: 16px 20px; gap: 16px; }
 
   /* Hide desktop-only elements */
