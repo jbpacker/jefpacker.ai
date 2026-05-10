@@ -194,7 +194,7 @@ window.RRT_THEMES = {
     drawPlanet(ctx, pos, phi) {
       var img = this._planet;
       if (img && img.complete && img.naturalWidth > 0) {
-        var w = 72, h = 72;
+        var w = 52, h = 52;
         ctx.save();
         ctx.translate(pos.x, pos.y);
         ctx.rotate(phi);
@@ -208,7 +208,7 @@ window.RRT_THEMES = {
         var w = 28, h = 28;
         ctx.save();
         ctx.translate(pos.x, pos.y);
-        ctx.rotate(pos.yaw + Math.PI * 0.5);
+        ctx.rotate(pos.yaw + Math.PI / 4);
         ctx.drawImage(img, -w / 2, -h / 2, w, h);
         ctx.restore();
       }
