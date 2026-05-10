@@ -40,22 +40,16 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="/" class="nav-logo">Jef Packer</a>
-    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
-      <svg class="icon-open" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-      </svg>
-      <svg class="icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-      </svg>
-    </button>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="experience.html">experience</a></li>
-      <li><a href="portfolio.html" aria-current="page">portfolio</a></li>
-      <li><a href="about.html">about</a></li>
-    </ul>
-  </nav>
+  <header class="topbar">
+    <a class="brand" href="/"><span>/home/jefpacker/portfolio</span><span class="brand-caret">$</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <a href="/">HOME</a>
+      <a href="experience.html">EXPERIENCE</a>
+      <a href="portfolio.html" class="active">PORTFOLIO</a>
+      <a href="about.html">ABOUT</a>
+    </nav>
+  </header>
 
   <main id="main-content" class="page-layout">
     <header>
