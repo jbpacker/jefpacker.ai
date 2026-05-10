@@ -142,4 +142,76 @@ window.RRT_THEMES = {
       ctx.restore();
     },
   },
+
+  // ============================================================
+  // CLASSIC — original site aesthetic: stars, Saturn, rocket SVG
+  // ============================================================
+  classic: {
+    name: 'classic',
+    treeColor: 'rgba(200, 169, 110, 0.18)',
+    treeWidth: 1,
+    pathColor: '#c8a96e',
+    pathWidth: 1.5,
+    _planet: null,
+    _rocket: null,
+    _stars: null,
+    _loadImages() {
+      if (!this._planet) {
+        this._planet = new Image();
+        this._planet.src = 'assets/planet.png';
+      }
+      if (!this._rocket) {
+        this._rocket = new Image();
+        this._rocket.src = 'assets/rocket.svg';
+      }
+    },
+    _initStars(canvas) {
+      if (this._stars && this._stars.w === canvas.width && this._stars.h === canvas.height) return;
+      var list = [];
+      var count = Math.floor(canvas.width * canvas.height / 2500);
+      for (var i = 0; i < count; i++) {
+        list.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.1 + 0.2,
+          a: Math.random() * 0.55 + 0.2,
+        });
+      }
+      this._stars = { w: canvas.width, h: canvas.height, list: list };
+    },
+    drawBg(ctx, canvas) {
+      this._loadImages();
+      this._initStars(canvas);
+      var list = this._stars.list;
+      for (var i = 0; i < list.length; i++) {
+        var s = list[i];
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + s.a + ')';
+        ctx.fill();
+      }
+    },
+    drawPlanet(ctx, pos, phi) {
+      var img = this._planet;
+      if (img && img.complete && img.naturalWidth > 0) {
+        var w = 72, h = 72;
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+        ctx.rotate(phi);
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      }
+    },
+    drawRocket(ctx, pos) {
+      var img = this._rocket;
+      if (img && img.complete && img.naturalWidth > 0) {
+        var w = 28, h = 28;
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+        ctx.rotate(pos.yaw + Math.PI * 0.5);
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      }
+    },
+  },
 };
