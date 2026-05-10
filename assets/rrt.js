@@ -223,7 +223,10 @@
     },
     resize() {
       const r = this.container.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) return;
+      const wasEmpty = this.canvas.width === 0 || this.canvas.height === 0;
       this.canvas.width = r.width; this.canvas.height = r.height;
+      if (wasEmpty) this.start();
     },
     start() {
       this.target = new Target();
