@@ -1,523 +1,263 @@
-
 /* -----------------------------------------------
 /* Author : Jef Packer  - jefpacker.ai
 /* Apache license: https://www.apache.org/licenses/LICENSE-2.0.html
 /* Github : github.com/jbpacker/paths
+/* Adapted: themed rendering, exposed stats
 /* ----------------------------------------------- */
 
-// Where curvature is 1/R (R is radius of turn) and dist is the arc length traveled.
-function stepCurv(p, curvature, dist) {
-    var dx_local = dist;
-    var dy_local = 0.0;
-    var theta = 0.0;
+(function() {
+  function stepCurv(p, curvature, dist) {
+    var dx_local = dist, dy_local = 0.0, theta = 0.0;
     if (Math.abs(curvature) > 0.0001) {
-        var R = 1 / curvature;
-        theta = dist * curvature;
-        dx_local = R * Math.sin(theta);
-        dy_local = R * (1 - Math.cos(theta));
+      var R = 1 / curvature;
+      theta = dist * curvature;
+      dx_local = R * Math.sin(theta);
+      dy_local = R * (1 - Math.cos(theta));
     }
-    var c = Math.cos(-p.yaw);
-    var s = Math.sin(-p.yaw);
-
-    var x = dx_local * c + dy_local * s + p.x;  
+    var c = Math.cos(-p.yaw), s = Math.sin(-p.yaw);
+    var x = dx_local * c + dy_local * s + p.x;
     var y = -dx_local * s + dy_local * c + p.y;
-    var yaw = p.yaw + theta;
+    return new Position(x, y, p.yaw + theta);
+  }
+  function curvToPoint(p, target) {
+    var s = Math.sin(p.yaw), c = Math.cos(p.yaw);
+    var dx = (target.x - p.x) * c + (target.y - p.y) * s;
+    var dy = -(target.x - p.x) * s + (target.y - p.y) * c;
+    return (2 * dy) / (dx * dx + dy * dy);
+  }
+  function distance(p, target) {
+    var dx = target.x - p.x, dy = target.y - p.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  class Position {
+    constructor(x, y, yaw) { this.x = x; this.y = y; this.yaw = yaw; }
+  }
 
-    let new_p = new Position(x, y, yaw);
-    return new_p;
-}
-
-// Find the curvature to make it from the point p to the target.
-function curvToPoint(p, target) {
-    var s = Math.sin(p.yaw);
-    var c = Math.cos(p.yaw);
-
-    var dx_global = (target.x - p.x);
-    var dy_global = (target.y - p.y);
-
-    var dx = dx_global * c + dy_global * s;
-    var dy = -dx_global * s + dy_global * c;
-
-    var curv = (2 * dy) / (dx * dx + dy * dy);
-    return curv;
-}
-
-// Integrate along constant curvature angle
-function stepRad(p, angle, dist) {
-    var dx = dist * Math.sin(angle);
-    var dy = dist * Math.cos(angle);
-    let new_p = new Position(p.x + dx, p.y + dy, angle);
-    return new_p;
-}
-
-// Euclidean distance
-function distance(p, target) {
-    var dx = target.x - p.x;
-    var dy = target.y - p.y;
-    var out = Math.sqrt(dx * dx + dy * dy);
-    return out;
-}
-
-class Position {
-    constructor(x, y, yaw) {
-        this.x = x;
-        this.y = y;
-        this.yaw = yaw;
-    }
-}
-
-// Search tree branch is connects two nodes and holds the traveled path between them.
-class Branch {
+  class Branch {
     constructor(parent, curvature, distance) {
-        this.parent = parent;
-        this.curvature = curvature;
-        this.distance = distance;
-
-        let new_position = stepCurv(this.parent.position, this.curvature, this.distance)
-
-        this.child = new Node(this.parent, this, new_position)
+      this.parent = parent; this.curvature = curvature; this.distance = distance;
+      this.child = new Node(parent, this, stepCurv(parent.position, curvature, distance));
     }
-
-    singleDraw() {
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-
-        ctx.beginPath();
-
-        ctx.moveTo(this.parent.position.x, this.parent.position.y);
-        var p = this.parent.position;
-        var i = 0;
-        var ds = 1.0
-        while (i < this.distance) {
-            i += ds
-            p = stepCurv(p, this.curvature, ds);
-            ctx.lineTo(p.x, p.y);
-        }
-        ctx.lineTo(this.child.position.x, this.child.position.y)
-        ctx.stroke();        }
-
-    draw() {
-        ctx.strokeStyle = 'gray';
-        ctx.lineWidth = 1;
-
-        ctx.beginPath();
-
-        ctx.moveTo(this.parent.position.x, this.parent.position.y);
-        var p = this.parent.position;
-        var i = 0;
-        var ds = 1.0
-        while (i < this.distance) {
-            i += ds
-            p = stepCurv(p, this.curvature, ds);
-            ctx.lineTo(p.x, p.y);
-        }
-        ctx.lineTo(this.child.position.x, this.child.position.y)
-        ctx.stroke();
-        this.child.draw()
+    drawSeg(ctx, color, width) {
+      ctx.strokeStyle = color; ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(this.parent.position.x, this.parent.position.y);
+      var p = this.parent.position, i = 0, ds = 1.0;
+      while (i < this.distance) { i += ds; p = stepCurv(p, this.curvature, ds); ctx.lineTo(p.x, p.y); }
+      ctx.lineTo(this.child.position.x, this.child.position.y);
+      ctx.stroke();
     }
-}
+  }
 
-// Search tree node. Holds information about children (next) nodes, and parent (prev) node.
-class Node {
+  class Node {
     constructor(parent, branch, position) {
-        this.parent = parent;
-        this.branch = branch;
-        this.position = position;
-        this.children = [];
-
-        this.curvature = (Math.random() * 2 * curvature_sample) - (curvature_sample);
-        this.distance = Math.random() * distance_sample + distance_sample_offset;
+      this.parent = parent; this.branch = branch; this.position = position;
+      this.children = [];
+      this.curvature = (Math.random() * 2 * RRT.cfg.curvature_sample) - RRT.cfg.curvature_sample;
+      this.distance = Math.random() * RRT.cfg.distance_sample + RRT.cfg.distance_sample_offset;
     }
-
-    sample() {
-        let b = new Branch(this, this.curvature, this.distance);
-        this.children.push(b);
-        return b;
+    sample() { let b = new Branch(this, this.curvature, this.distance); this.children.push(b); return b; }
+    drawTree(ctx) {
+      for (const b of this.children) {
+        b.drawSeg(ctx, RRT.theme.treeColor, RRT.theme.treeWidth);
+        b.child.drawTree(ctx);
+      }
     }
-
-    drawFromChild() {
-        if (this.branch) {
-            this.branch.singleDraw()
-        }
-        if (this.parent) {
-            this.parent.drawFromChild()
-        }
+    drawFromChild(ctx) {
+      if (this.branch) this.branch.drawSeg(ctx, RRT.theme.pathColor, RRT.theme.pathWidth);
+      if (this.parent) this.parent.drawFromChild(ctx);
     }
-
-    draw() {
-        for (const b in this.children) {
-            this.children[b].draw()
-        }
-        // Debug Rectangle
-        // ctx.fillRect(
-        //     this.position.x - 2,
-        //     this.position.y - 2,
-        //     4,
-        //     4);
+    distanceTo(target) { return distance(this.position, target); }
+    containsParent(t, up) {
+      if (this == t) return true;
+      if (up == 0 || !this.parent) return false;
+      return this.parent.containsParent(t, up - 1);
     }
+  }
 
-    getParent(up) {
-        if (up == 0) {
-            return this;
-        }
+  const sleepNow = (d) => new Promise((r) => setTimeout(r, d));
 
-        if (this.parent == null) {
-            return null;
-        }
-
-        return this.parent.getParent(up - 1);
-    }
-
-    distanceTo(target) {
-        return distance(this.position, target)
-    }
-
-    containsParent(target_node, up) {
-        if (this == target_node) {
-            return true;
-        }
-        if (up == 0 || this.parent == null) {
-            return false;
-        }
-        return this.parent.containsParent(target_node, up - 1);
-    }
-}
-
-const sleepNow = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
-
-// Holds information about all possible paths that can be taken. 
-// Searches by attaching new nodes to children based on distance to 
-// target heuristic. New nodes randomly sample curvature and distance from parent.
-class Tree {
+  class Tree {
     constructor(start, target) {
-        this.root = new Node(null, null, start)
-        this.node_queue = []
-        this.node_queue.push(this.root)
-        this.running = false
-        this.closest_node = this.root
-        this.target = target
+      this.root = new Node(null, null, start);
+      this.node_queue = [this.root];
+      this.running = false;
+      this.closest_node = this.root;
+      this.target = target;
+      this.totalNodes = 1;
     }
-
     async rollout() {
-        this.running = true
-
-        while (this.node_queue.length > 0) {
-            let node = this.node_queue.shift();
-            var branch = node.sample();
-
-            var dist_to_closest_node = this.closest_node.distanceTo(this.target.position)
-            var dist_to_child = branch.child.distanceTo(this.target.position)
-
-            if (dist_to_child < dist_to_closest_node) {
-                this.closest_node = branch.child
-                this.node_queue.push(branch.child)
-            } else if (dist_to_child < dist_to_closest_node + explore_distance) {
-                this.node_queue.push(branch.child)
-            }
-
-            if (node.distanceTo(this.target.position) < dist_to_closest_node + explore_distance) {
-                this.node_queue.push(node)
-            }
-
-            if (dist_to_child < finish_distance && !this.target.circle) {
-                this.running = false
-                return;
-            }
-
-            await sleepNow(search_sleep_time);
-
-            // Add root back in just in case the queue goes empty
-            if (this.node_queue.length == 0) {
-                this.node_queue.push(this.root)
-                this.closest_node = this.root
-            }
-        }
+      this.running = true;
+      while (this.node_queue.length > 0) {
+        let node = this.node_queue.shift();
+        var branch = node.sample();
+        this.totalNodes++;
+        var d_close = this.closest_node.distanceTo(this.target.position);
+        var d_child = branch.child.distanceTo(this.target.position);
+        if (d_child < d_close) { this.closest_node = branch.child; this.node_queue.push(branch.child); }
+        else if (d_child < d_close + RRT.cfg.explore_distance) this.node_queue.push(branch.child);
+        if (node.distanceTo(this.target.position) < d_close + RRT.cfg.explore_distance) this.node_queue.push(node);
+        if (d_child < RRT.cfg.finish_distance && !this.target.circle) { this.running = false; return; }
+        await sleepNow(RRT.cfg.search_sleep);
+        if (this.node_queue.length == 0) { this.node_queue.push(this.root); this.closest_node = this.root; }
+      }
     }
-
-    chopTrunk(trunk_node) {
-        if (trunk_node.parent) {
-            this.root = trunk_node.parent;
-            this.prune(this.root);
-            this.root.parent = null;
-        }
+    chopTrunk(t) { if (t.parent) { this.root = t.parent; this.prune(this.root); this.root.parent = null; } }
+    prune(t) {
+      let q = [];
+      while (this.node_queue.length > 0) {
+        var n = this.node_queue.shift();
+        if (n.containsParent(t, RRT.cfg.draw_depth)) q.push(n);
+      }
+      this.node_queue = q;
     }
+    update() { if (!this.running) this.rollout(); }
+    draw(ctx) { this.root.drawTree(ctx); this.closest_node.drawFromChild(ctx); }
+  }
 
-    // Checks that "root" node is within "up" distance of all nodes in node_queue
-    prune(target_node) {
-        let new_node_queue = [];
-        while (this.node_queue.length > 0) {
-            var node = this.node_queue.shift()
-            if (node.containsParent(target_node, draw_depth)) {
-                new_node_queue.push(node)
-            }
-        }
-        this.node_queue = [...new_node_queue];
-    }
-
-    async update() {
-        if (this.running == false) {
-            this.rollout()
-        }
-    }
-
-    draw() {
-        this.root.draw()
-        this.closest_node.drawFromChild()
-    }
-}
-
-// The robot that follows the tree. Shown as rocket on web page.
-class Robot {
+  class Robot {
     constructor(start, tree) {
-        this.position = start;
-        this.tree = tree;
-        this.target_node = this.tree.root;
-        this.moving = false;
-        this.path = [];
+      this.position = start; this.tree = tree;
+      this.target_node = tree.root; this.moving = false; this.path = [];
     }
-
     constructPath() {
-        var node = this.tree.closest_node;
-        this.path = [];
-        while (node != this.target_node) {
-            this.path.push(node);
-            if (node.parent) {
-                node = node.parent;
-            } else {
-                break;
-            }
-        }
+      var n = this.tree.closest_node; this.path = [];
+      while (n != this.target_node) { this.path.push(n); if (n.parent) n = n.parent; else break; }
     }
-
     async move() {
-        while (this.moving) {
-            this.constructPath();
-
-            // Bump up the node once the current one is complete
-            if (this.atTargetNode() && this.path.length > 0) {
-                this.target_node = this.path.pop()
-                this.tree.prune(this.target_node)
-                this.tree.chopTrunk(this.target_node)
-            }
-
-            var dist = robot_step;
-            if (this.atTargetNode() && this.path.length == 0) {
-                // set dist to 0, so robot doesn't move forward.
-                dist = 0.0;
-                // In circle mode we want to continue running.
-                if (!this.tree.target.circle) {
-                    this.moving = false;
-                    return;
-                }
-            }
-
-            // Find curvature to the next node and step the robot forward.
-            var curv = curvToPoint(this.position, this.target_node.position);
-            this.position = stepCurv(this.position, curv, dist);
-
-            await sleepNow(robot_sleep_time);
+      while (this.moving) {
+        this.constructPath();
+        if (this.atTarget() && this.path.length > 0) {
+          this.target_node = this.path.pop();
+          this.tree.prune(this.target_node);
+          this.tree.chopTrunk(this.target_node);
         }
-    }
-
-    atTargetNode() {
-        return distance(this.target_node.position, this.position) < finish_move_distance;
-    }
-
-    needToMove() {
-        return (this.tree.closest_node != this.target_node) || this.tree.target.circle;
-    }
-
-    update() {
-        if (!this.moving && this.tree.running && this.needToMove()) {
-            this.moving = true;
-            this.move();
+        var dist = RRT.cfg.robot_step;
+        if (this.atTarget() && this.path.length == 0) {
+          dist = 0;
+          if (!this.tree.target.circle) { this.moving = false; return; }
         }
+        var curv = curvToPoint(this.position, this.target_node.position);
+        this.position = stepCurv(this.position, curv, dist);
+        await sleepNow(RRT.cfg.robot_sleep);
+      }
     }
-
-    draw() {
-        // Debug: Draw Robot Path
-        // for (let i = 0; i < this.path.length; i++) {
-        //     if (!this.path[i]) {
-        //         break;
-        //     }
-
-        //     if (this.path[i].branch && this.path[i].parent) {
-        //         this.path[i].branch.singleDraw()
-        //     }
-        // }
-
-        // Terrible js system for rotating things
-        ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.position.yaw + (0.25*Math.PI));
-        ctx.drawImage(rocket, -rocket_length*0.5, -rocket_length*0.5, rocket_length, rocket_length)
-        ctx.rotate(-(this.position.yaw + (0.25*Math.PI)));
-        ctx.translate(-this.position.x, -this.position.y);
-
-        // Debug: Draw dot on target node
-        // ctx.fillRect(
-        //     this.target_node.position.x - 5,
-        //     this.target_node.position.y - 5,
-        //     10,
-        //     10);
-
+    atTarget() { return distance(this.target_node.position, this.position) < RRT.cfg.finish_move; }
+    needToMove() { return this.tree.closest_node != this.target_node || this.tree.target.circle; }
+    update() { if (!this.moving && this.tree.running && this.needToMove()) { this.moving = true; this.move(); } }
+    draw(ctx) {
+      if (RRT.theme.drawRocket) RRT.theme.drawRocket(ctx, this.position);
     }
-}
+  }
 
-// Target that the tree tries to make it to. Shows up as planet on webpage.
-class Target {
+  class Target {
     constructor() {
-        this.circle = true;
-        this.theta = planet_start_theta;
-        this.position = new Position(0.0, 0.0, 0.0);
-        this.updatePosition(this.theta)
-        this.phi = 0.0;
+      this.circle = true;
+      this.theta = RRT.cfg.planet_start_theta;
+      this.position = new Position(0, 0, 0);
+      this.updatePosition(this.theta);
+      this.phi = 0;
     }
-
-    clickUpdate(position) {
-        this.position = position
-        this.circle = false
-    }
-
+    clickUpdate(p) { this.position = p; this.circle = false; }
     async update() {
-        while (this.circle) {
-            // arclength = R*theta
-            var r = 0.25 * planet_percent_circle * (window.innerWidth + window.innerHeight);
-            this.theta = this.theta + planet_step_size / r;
-            this.updatePosition(this.theta)
-            await sleepNow(target_sleep_time);
-        }
+      while (this.circle) {
+        var r = 0.25 * RRT.cfg.planet_pct * (window.innerWidth + window.innerHeight);
+        this.theta += RRT.cfg.planet_step / r;
+        this.updatePosition(this.theta);
+        await sleepNow(RRT.cfg.target_sleep);
+      }
     }
-
     updatePosition(theta) {
-        this.position.x = 0.5 * window.innerWidth * (1 + planet_percent_circle * Math.sin(theta));
-        this.position.y = 0.5 * window.innerHeight * (1 + planet_percent_circle * Math.cos(theta));
+      var w = RRT.canvas.width, h = RRT.canvas.height;
+      this.position.x = 0.5 * w * (1 + RRT.cfg.planet_pct * Math.sin(theta));
+      this.position.y = 0.5 * h * (1 + RRT.cfg.planet_pct * Math.cos(theta));
     }
-
-    draw() {
-        // Terrible js system for rotating things
-        this.phi = this.phi + planet_spin_step
-        ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.phi);
-        ctx.drawImage(
-            planet, 
-            -planet_length*0.5, 
-            -planet_length*0.5, 
-            planet_length, 
-            planet_length)
-        ctx.rotate(-this.phi);
-        ctx.translate(-this.position.x, -this.position.y);
+    draw(ctx) {
+      this.phi += RRT.cfg.planet_spin;
+      if (RRT.theme.drawPlanet) RRT.theme.drawPlanet(ctx, this.position, this.phi);
     }
-}
+  }
 
-// Search + Motion Parameters
+  // Public namespace
+  const RRT = {
+    cfg: {
+      planet_pct: 0.6,
+      planet_step: 1.5,
+      planet_spin: Math.PI / 500,
+      planet_start_theta: 1/8 * Math.PI,
+      curvature_sample: 0.035,
+      distance_sample: 60,
+      distance_sample_offset: 25,
+      explore_distance: 75,
+      finish_distance: 40,
+      draw_depth: 30,
+      search_sleep: 80,
+      draw_sleep: 50,
+      robot_sleep: 40,
+      target_sleep: 40,
+      finish_move: 5,
+      robot_step: 2,
+    },
+    theme: null,
+    canvas: null, ctx: null,
+    tree: null, robot: null, target: null,
+    container: null,
+    onStats: null,
 
-// planet circle percent of screen
-var planet_percent_circle = 0.6;
+    init(container, theme) {
+      this.container = container;
+      this.theme = theme;
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+      this.canvas.addEventListener('click', (e) => this.click(e));
+      container.appendChild(this.canvas);
+      this.start();
+      this.loop();
+    },
+    resize() {
+      const r = this.container.getBoundingClientRect();
+      this.canvas.width = r.width; this.canvas.height = r.height;
+    },
+    start() {
+      this.target = new Target();
+      const sx = 0.5 * this.canvas.width;
+      const sy = this.canvas.height - 80;
+      const sp = new Position(sx, sy, Math.atan2(this.target.position.y - sy, this.target.position.x - sx));
+      this.tree = new Tree(sp, this.target);
+      this.robot = new Robot(sp, this.tree);
+      this.target.update();
+      this.tree.update();
+      this.robot.update();
+    },
+    setTheme(theme) { this.theme = theme; },
+    click(e) {
+      const r = this.canvas.getBoundingClientRect();
+      const p = new Position(e.clientX - r.left, e.clientY - r.top, 0);
+      this.target.clickUpdate(p);
+      this.tree.update();
+      this.robot.update();
+    },
+    async loop() {
+      while (true) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.theme.drawBg) this.theme.drawBg(this.ctx, this.canvas);
+        this.target.draw(this.ctx);
+        this.tree.draw(this.ctx);
+        this.robot.draw(this.ctx);
+        if (this.onStats) {
+          this.onStats({
+            nodes: this.tree.totalNodes,
+            queue: this.tree.node_queue.length,
+            dist: Math.round(this.robot.position ? distance(this.robot.position, this.target.position) : 0),
+            running: this.tree.running ? 1 : 0,
+          });
+        }
+        await sleepNow(this.cfg.draw_sleep);
+      }
+    },
+  };
 
-// planet step size, same units as robot step size
-var planet_step_size = 1.5;
-
-// How quickly the planet spins, in rad/tick
-var planet_spin_step = Math.PI / 500;
-
-// Where the planet starts wrt angle about center.
-var planet_start_theta = 1/8 * Math.PI;
-
-// Curvature sample = [+/-]rand[0-1] * curvature_sample
-var curvature_sample = 0.035;
-
-// Sample distance = rand[0-1] * distance_sample + distance_sample_offset
-var distance_sample = 60;
-var distance_sample_offset = 25;
-
-// Will continue expanding node if within this distance from target of closest node
-var explore_distance = 75;
-
-// Stops searching when within this distance of target
-var finish_distance = 40;
-
-// Draws this many nodes up from node that's closest to target
-var draw_depth = 30;
-
-// Break time between cycles [ms]
-var search_sleep_time = 80;
-var draw_sleep_time = 50;
-var robot_sleep_time = 40;
-var target_sleep_time = 40;
-
-var finish_move_distance = 5;
-
-var robot_length = 40;
-var robot_width = 18;
-var robot_step = 2;
-var rocket_length = 40;
-
-var planet_length = 40;
-
-// Note: These urls come from jefpacker.ai webflow.
-let rocket = new Image();
-rocket.src = 'https://uploads-ssl.webflow.com/612292ecc8ee4caae75526b9/612472e781d6bd721466ce5d_rocket.svg';
-
-let planet = new Image();
-planet.src = 'https://uploads-ssl.webflow.com/612292ecc8ee4caae75526b9/612c501335b1fd3fcf3657d8_planet.png'
-
-let target = new Target();
-
-robot_start_x = 0.5 * window.innerWidth;
-robot_start_y = window.innerHeight - rocket_length * 2;
-
-// Search start position
-let start_position = new Position(
-    robot_start_x,
-    robot_start_y,
-    // Aim the robot toward the planet
-    Math.atan2(target.position.y - robot_start_y, target.position.x - robot_start_x));
-
-let tree = new Tree(start_position, target);
-let robot = new Robot(start_position, tree);
-var canvas, ctx;
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.outerHeight;
-    document.body.style.overflow = "hidden"
-}
-
-function init() {
-    canvas = document.createElement('canvas')
-    resizeCanvas();
-    ctx = canvas.getContext("2d");
-
-    canvas.addEventListener("click", function (e) {
-        updatePosition(e)
-    }, false);
-    window.addEventListener("resize", resizeCanvas, false);
-
-    draw();
-
-    target.update();
-    tree.update();
-    robot.update();
-
-    div = document.getElementById('rrt');
-    div.appendChild(canvas)
-}
-
-async function draw() {
-    if (true) {
-    // if (robot.moving || tree.running) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        target.draw();
-        tree.draw();
-        robot.draw();
-    }
-    await sleepNow(draw_sleep_time)
-    requestAnimationFrame(draw);
-}
-
-function updatePosition(e) {
-    let target_position = new Position(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-    target.clickUpdate(target_position)
-    tree.update()
-    robot.update()
-}
+  window.RRT = RRT;
+})();

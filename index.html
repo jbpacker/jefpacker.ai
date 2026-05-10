@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="mission">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Jef Packer — Machine Learning Engineer and Roboticist. 10+ years teaching robots how to interact and move in the world.">
-  <title>Jef Packer</title>
+  <title>Jef Packer — ML Engineer &amp; Roboticist</title>
   <link rel="canonical" href="https://jefpacker.ai/">
 
   <meta property="og:type" content="website">
@@ -32,70 +32,185 @@
   </script>
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" as="font" href="assets/fonts/playfair-display-700.woff2" type="font/woff2" crossorigin>
-  <link rel="preload" as="font" href="assets/fonts/ibm-plex-sans-400.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="assets/fonts/ibm-plex-mono-400.woff2" type="font/woff2" crossorigin>
   <link rel="prefetch" href="experience.html">
 
   <link rel="stylesheet" href="style.css">
-
-  <script src="assets/rrt.js" defer></script>
-  <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
-      rocket.src = 'assets/rocket.svg';
-      planet.src = 'assets/planet.png';
-      init();
-    });
-  </script>
-  <script src="assets/main.js" defer></script>
 </head>
 <body>
-  <div id="rrt" aria-hidden="true"></div>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="/"><span>/home/jefpacker</span><span class="brand-caret">$</span></a>
+    <div class="theme-switch" id="theme-switch">
+      <button data-set="mission" class="on">~/mission</button>
+      <button data-set="vapor">~/vapor</button>
+      <a href="index-classic.html" class="theme-classic">~/classic</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="/" class="active">HOME</a>
+      <a href="experience.html">EXPERIENCE</a>
+      <a href="portfolio.html">PORTFOLIO</a>
+      <a href="about.html">ABOUT</a>
+    </nav>
+  </header>
 
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="/" class="nav-logo" aria-current="page">Jef Packer</a>
-    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
-      <svg class="icon-open" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-      </svg>
-      <svg class="icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-      </svg>
-    </button>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="experience.html">experience</a></li>
-      <li><a href="portfolio.html">portfolio</a></li>
-      <li><a href="about.html">about</a></li>
-    </ul>
-  </nav>
+  <div class="mobile-bio" aria-hidden="true">
+    <span class="prompt">$</span> 10+ years teaching robots how to interact &amp; move in the world.
+  </div>
 
-  <main id="main-content" class="hero-layout">
-    <section class="hero">
-      <h1>Hi, I'm Jef.</h1>
-      <p class="hero-tagline">Machine Learning Engineer and Roboticist. I've spent 10+ years teaching robots how to interact&nbsp;&amp;&nbsp;move in&nbsp;the&nbsp;world.</p>
-    </section>
+  <main class="main" id="main-content">
+    <aside class="sidebar">
+      <section class="identity" aria-label="Identity">
+        <h1 class="identity-name">Jef Packer</h1>
+        <div class="identity-role">ML Engineer · Roboticist</div>
+        <div class="bio">
+          <p><span class="prompt">$</span> 10+ years teaching robots how to interact &amp; move in the world.</p>
+        </div>
+      </section>
 
-    <section class="social-links" aria-label="Social links">
-      <a href="https://github.com/jbpacker" class="social-link" aria-label="GitHub profile">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-        </svg>
-      </a>
+      <section class="tele" aria-label="RRT telemetry">
+        <div class="tele-frame">
+          <div class="tele-top">╭─ <b>rrt://target</b><span class="tele-fill"></span>╮</div>
+          <div class="tele-body">
+            <div class="tele-row">
+              <span class="tele-k">distance</span>
+              <span class="tele-v"><span id="t-dist">—</span> px</span>
+            </div>
+            <div class="tele-row">
+              <span class="tele-k">nodes</span>
+              <span class="tele-v" id="t-nodes">0</span>
+            </div>
+            <div class="tele-spark" id="t-spark" aria-label="distance over time"></div>
+            <div class="tele-axis"><span>−30s</span><span>now</span></div>
+          </div>
+          <div class="tele-bot">╰<span class="tele-fill"></span>╯</div>
+        </div>
+      </section>
 
-      <a href="https://www.linkedin.com/in/jef-packer/" class="social-link" aria-label="LinkedIn profile">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-        </svg>
-      </a>
+      <section class="links" aria-label="Social links">
+        <div class="links-grid">
+          <a class="link-row" href="https://github.com/jbpacker" target="_blank" rel="noopener noreferrer">
+            <span class="link-key">GitHub</span>
+            <span class="link-handle">/jbpacker</span>
+            <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="link-row" href="https://www.linkedin.com/in/jef-packer/" target="_blank" rel="noopener noreferrer">
+            <span class="link-key">LinkedIn</span>
+            <span class="link-handle">/jef-packer</span>
+            <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="link-row" href="https://medium.com/@jefsnacker" target="_blank" rel="noopener noreferrer">
+            <span class="link-key">Medium</span>
+            <span class="link-handle">@jefsnacker</span>
+            <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+    </aside>
 
-      <a href="https://medium.com/@jefsnacker" class="social-link" aria-label="Medium profile">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
-        </svg>
-      </a>
+    <section class="canvas-pane" aria-label="RRT path planning visualization">
+      <div id="rrt" aria-hidden="true"></div>
+      <div class="hud" aria-hidden="true">
+        <div class="hud-corners"></div>
+        <span class="corner-tr"></span>
+        <span class="corner-bl"></span>
+        <div class="hud-label hud-bl">RRT · click to retarget</div>
+      </div>
     </section>
   </main>
+
+  <footer class="statusbar" aria-label="Status">
+    <span class="spacer"></span>
+    <span>© Jef Packer · 2026</span>
+  </footer>
+</div>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="nav-drawer" hidden aria-label="Navigation menu">
+  <div class="drawer-theme" id="drawer-theme">
+    <button data-set="mission" class="on">~/mission</button>
+    <button data-set="vapor">~/vapor</button>
+    <a href="index-classic.html" class="theme-classic">~/classic</a>
+  </div>
+  <nav class="drawer-nav">
+    <a href="/" class="active">HOME</a>
+    <a href="experience.html">EXPERIENCE</a>
+    <a href="portfolio.html">PORTFOLIO</a>
+    <a href="about.html">ABOUT</a>
+  </nav>
+</div>
+
+<script src="assets/themes.js"></script>
+<script src="assets/rrt.js"></script>
+<script>
+(function () {
+  const container = document.getElementById('rrt');
+
+  requestAnimationFrame(function () {
+    const theme = document.documentElement.getAttribute('data-theme') || 'mission';
+    RRT.init(container, RRT_THEMES[theme]);
+
+    // Telemetry
+    const elDist  = document.getElementById('t-dist');
+    const elNodes = document.getElementById('t-nodes');
+    const sparkEl = document.getElementById('t-spark');
+    const SPARK_N = 30;
+    const bars = [];
+    for (let i = 0; i < SPARK_N; i++) {
+      const b = document.createElement('span');
+      bars.push(b);
+      sparkEl.appendChild(b);
+    }
+    let history = new Array(SPARK_N).fill(0);
+    let latest  = { nodes: 0, dist: 0 };
+    RRT.onStats = function (s) { latest = s; };
+    setInterval(function () {
+      elNodes.textContent = latest.nodes.toLocaleString();
+      elDist.textContent  = latest.dist;
+    }, 500);
+    setInterval(function () {
+      history.shift(); history.push(latest.dist);
+      var max = Math.max(40, Math.max.apply(null, history));
+      bars.forEach(function (bar, i) {
+        bar.style.height  = Math.max(1, (history[i] / max) * 28) + 'px';
+        bar.style.opacity = 0.25 + 0.65 * (i / SPARK_N);
+      });
+    }, 1000);
+  });
+
+  // Theme switch
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-set]').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.set === t);
+    });
+    if (window.RRT && RRT_THEMES[t]) RRT.setTheme(RRT_THEMES[t]);
+  }
+
+  document.getElementById('theme-switch').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-set]');
+    if (btn) setTheme(btn.dataset.set);
+  });
+
+  document.getElementById('drawer-theme').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-set]');
+    if (btn) setTheme(btn.dataset.set);
+  });
+
+  // Hamburger
+  var toggle = document.getElementById('nav-toggle');
+  var drawer = document.getElementById('nav-drawer');
+
+  toggle.addEventListener('click', function () {
+    var open = !drawer.hidden;
+    drawer.hidden = open;
+    toggle.setAttribute('aria-expanded', String(!open));
+    toggle.textContent = open ? '☰' : '✕';
+  });
+}());
+</script>
 </body>
 </html>
