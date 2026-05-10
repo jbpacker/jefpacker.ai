@@ -211,22 +211,28 @@
       if (theme.cfg) Object.assign(this.cfg, theme.cfg);
       this.canvas = document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d');
-      this.resize();
+      this.canvas.addEventListener('click', (e) => this.click(e));
+      container.appendChild(this.canvas);
       window.addEventListener('resize', () => this.resize());
       if (window.ResizeObserver) {
         new ResizeObserver(() => this.resize()).observe(container);
       }
-      this.canvas.addEventListener('click', (e) => this.click(e));
-      container.appendChild(this.canvas);
-      this.start();
-      this.loop();
+      this._waitForSize(0);
+    },
+    _waitForSize(attempts) {
+      const r = this.container.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        this.canvas.width = r.width; this.canvas.height = r.height;
+        this.start();
+        this.loop();
+      } else if (attempts < 60) {
+        requestAnimationFrame(() => this._waitForSize(attempts + 1));
+      }
     },
     resize() {
       const r = this.container.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) return;
-      const wasEmpty = this.canvas.width === 0 || this.canvas.height === 0;
       this.canvas.width = r.width; this.canvas.height = r.height;
-      if (wasEmpty) this.start();
     },
     start() {
       this.target = new Target();
