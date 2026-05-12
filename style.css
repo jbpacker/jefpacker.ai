@@ -569,6 +569,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   justify-content: center;
   gap: 0;
   pointer-events: auto;
+  z-index: 6;
 }
 
 .canvas-page-nav a {
