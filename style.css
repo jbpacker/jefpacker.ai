@@ -558,6 +558,34 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .corner-tr { top: 16px; right: 16px; border-top-width: 1px; border-right-width: 1px; }
 .corner-bl { bottom: 16px; left: 16px; border-bottom-width: 1px; border-left-width: 1px; }
 
+/* Canvas overlay page nav — mobile only (hidden by default, shown via media query) */
+.canvas-page-nav {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0;
+  pointer-events: auto;
+}
+
+.canvas-page-nav a {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  padding: 14px 20px;
+  background: transparent;
+  transition: color 0.2s ease;
+}
+
+.canvas-page-nav a:hover {
+  color: var(--text);
+}
+
 /* Nav drawer — mobile overlay (index only) */
 .nav-drawer {
   position: fixed;
@@ -1086,6 +1114,14 @@ button.patent-row {
   .app .topbar .nav { display: none; }
   .nav-toggle { display: block; }
   .app .topbar .theme-switch { display: none; }
+
+  .canvas-page-nav {
+    display: flex;
+  }
+
+  .page-nav-links {
+    display: none;
+  }
 }
 
 /* ============================================================
