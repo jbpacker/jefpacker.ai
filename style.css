@@ -1068,6 +1068,7 @@ button.patent-row {
     color: var(--muted);
     padding: 0 16px;
     white-space: nowrap;
+    margin-left: auto;
   }
 
   /* Hide desktop-only elements */
@@ -1075,8 +1076,9 @@ button.patent-row {
   .statusbar { display: none; }
 
   /* Telemetry condensed */
+  .tele { border-bottom: none; padding-bottom: 0; }
   .tele-frame { padding: 8px 0; }
-  .tele-body { display: flex; gap: 16px; padding: 4px 8px; }
+  .tele-body { display: flex; flex-direction: column; gap: 4px; padding: 4px 8px; }
   .tele-spark { height: 20px; margin-top: 6px; }
 
   /* Nav hidden, drawer handles it */

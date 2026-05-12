@@ -184,7 +184,7 @@
       planet_pct: 0.6,
       planet_step: 1.5,
       planet_spin: Math.PI / 500,
-      planet_start_theta: 1/8 * Math.PI,
+      planet_start_theta: 5/8 * Math.PI,
       curvature_sample: 0.035,
       distance_sample: 60,
       distance_sample_offset: 25,
