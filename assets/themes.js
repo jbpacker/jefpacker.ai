@@ -95,7 +95,7 @@ window.RRT_THEMES = {
       // Animating by subtracting offset from Z makes near lines rush forward fast,
       // far lines creep slowly — correct perspective speed behaviour.
       const K = floorH;
-      const numHLines = 50;
+      const numHLines = 200;
       const hOffset = this._gridOffset % 1;
 
       // Static horizon seam — closes the gap between farthest animated line and horizon
@@ -125,75 +125,89 @@ window.RRT_THEMES = {
         hGrad.addColorStop(0.88, `rgba(${r},${g},${b},${a})`);
         hGrad.addColorStop(1,    'rgba(0,0,0,0)');
         ctx.strokeStyle = hGrad;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(W, y);
         ctx.stroke();
       }
 
-      // Vertical lines — all converge to single VP at (W/2, hor)
-      // Fan edge-to-edge at the bottom for the classic road perspective look
-      const numVLines = 20;
-      for (let i = 0; i <= numVLines; i++) {
-        const t = i / numVLines;          // 0..1 left to right
-        const bx = W * t;                 // bottom x: full canvas width
-        const d = Math.abs(t - 0.5) * 2; // 0 = center, 1 = edge
+      // Vertical lines — radiate from VP to entire floor perimeter:
+      // left edge (bottom→top) + bottom edge (left→right) + right edge (top→bottom)
+      const numVLines = 50;
+      const sideH = floorH - 2;  // stop 2px shy of horizon to avoid degenerate lines
+      const perimTotal = sideH + W + sideH;
 
-        const vGrad = ctx.createLinearGradient(vp.x, vp.y, bx, H);
-        vGrad.addColorStop(0,   'rgba(255, 45, 149, 0.1)');
-        vGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.4)');
-        vGrad.addColorStop(1,   `rgba(0, 240, 255, ${(0.5 + d * 0.2).toFixed(2)})`);
+      for (let i = 0; i <= numVLines; i++) {
+        const p = (i / numVLines) * perimTotal;
+        let ex, ey;
+        if (p <= sideH) {
+          ex = 0;
+          ey = H - p;                          // left edge: H → hor+2
+        } else if (p <= sideH + W) {
+          ex = p - sideH;
+          ey = H;                              // bottom edge: 0 → W
+        } else {
+          ex = W;
+          ey = H - (p - sideH - W);           // right edge: H → hor+2
+        }
+
+        const onBottom = ey >= H - 1;
+        const endAlpha = onBottom ? 0.65 : 0.35;
+        const vGrad = ctx.createLinearGradient(vp.x, vp.y, ex, ey);
+        vGrad.addColorStop(0,   'rgba(255, 45, 149, 0.05)');
+        vGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.35)');
+        vGrad.addColorStop(1,   `rgba(0, 240, 255, ${endAlpha})`);
         ctx.strokeStyle = vGrad;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(vp.x, vp.y);
-        ctx.lineTo(bx, H);
+        ctx.lineTo(ex, ey);
         ctx.stroke();
       }
 
       ctx.restore();
 
-      // ── Palm tree silhouettes ─────────────────────────────────
-      const drawPalm = (x, baseY, lean, color, glowColor) => {
-        const trunkH = H * 0.22;
-        const tipX = x + lean * trunkH * 0.6;
-        const tipY = baseY - trunkH;
-        ctx.save();
-        ctx.shadowBlur = 14;
-        ctx.shadowColor = glowColor;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        // Curved trunk
-        ctx.beginPath();
-        ctx.moveTo(x, baseY);
-        ctx.quadraticCurveTo(x + lean * trunkH * 0.3, baseY - trunkH * 0.55, tipX, tipY);
-        ctx.stroke();
-        // Fronds
-        const numFronds = 6;
-        for (let f = 0; f < numFronds; f++) {
-          const angle = (f / numFronds) * Math.PI - Math.PI * 0.1 + (lean > 0 ? 0.15 : -0.15);
-          const fLen = trunkH * 0.45;
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(tipX, tipY);
-          ctx.quadraticCurveTo(
-            tipX + Math.cos(angle) * fLen * 0.55,
-            tipY + Math.sin(angle) * fLen * 0.55 - fLen * 0.15,
-            tipX + Math.cos(angle) * fLen,
-            tipY + Math.sin(angle) * fLen
-          );
-          ctx.stroke();
-        }
-        ctx.restore();
-      };
+      // // ── Palm tree silhouettes ─────────────────────────────────
+      // const drawPalm = (x, baseY, lean, color, glowColor) => {
+      //   const trunkH = H * 0.22;
+      //   const tipX = x + lean * trunkH * 0.6;
+      //   const tipY = baseY - trunkH;
+      //   ctx.save();
+      //   ctx.shadowBlur = 14;
+      //   ctx.shadowColor = glowColor;
+      //   ctx.strokeStyle = color;
+      //   ctx.lineWidth = 2;
+      //   // Curved trunk
+      //   ctx.beginPath();
+      //   ctx.moveTo(x, baseY);
+      //   ctx.quadraticCurveTo(x + lean * trunkH * 0.3, baseY - trunkH * 0.55, tipX, tipY);
+      //   ctx.stroke();
+      //   // Fronds
+      //   const numFronds = 6;
+      //   for (let f = 0; f < numFronds; f++) {
+      //     const angle = (f / numFronds) * Math.PI - Math.PI * 0.1 + (lean > 0 ? 0.15 : -0.15);
+      //     const fLen = trunkH * 0.45;
+      //     ctx.lineWidth = 1.2;
+      //     ctx.beginPath();
+      //     ctx.moveTo(tipX, tipY);
+      //     ctx.quadraticCurveTo(
+      //       tipX + Math.cos(angle) * fLen * 0.55,
+      //       tipY + Math.sin(angle) * fLen * 0.55 - fLen * 0.15,
+      //       tipX + Math.cos(angle) * fLen,
+      //       tipY + Math.sin(angle) * fLen
+      //     );
+      //     ctx.stroke();
+      //   }
+      //   ctx.restore();
+      // };
 
-      // Left palm — magenta
-      drawPalm(W * 0.04, H, 0.45, '#ff2d95', 'rgba(255,45,149,0.6)');
-      // Right palm — cyan (leaning left)
-      drawPalm(W * 0.96, H, -0.45, '#00f0ff', 'rgba(0,240,255,0.6)');
-      // Second right palm, slightly inset — magenta tint
-      drawPalm(W * 0.88, H * 0.97, -0.3, 'rgba(255,45,149,0.55)', 'rgba(255,45,149,0.3)');
+      // // Left palm — magenta
+      // drawPalm(W * 0.04, H, 0.45, '#ff2d95', 'rgba(255,45,149,0.6)');
+      // // Right palm — cyan (leaning left)
+      // drawPalm(W * 0.96, H, -0.45, '#00f0ff', 'rgba(0,240,255,0.6)');
+      // // Second right palm, slightly inset — magenta tint
+      // drawPalm(W * 0.88, H * 0.97, -0.3, 'rgba(255,45,149,0.55)', 'rgba(255,45,149,0.3)');
     },
     drawPlanet(ctx, pos, phi) {
       const tip = 18;   // center-to-tip of diamond
