@@ -81,50 +81,66 @@ window.RRT_THEMES = {
 
       ctx.restore(); // outer sky-zone clip
 
-      // ── Grid floor ───────────────────────────────────────────
-      this._gridOffset += 0.003;
+      // ── Grid floor ───────────────────────────────────────────────
+      this._gridOffset += 0.015;
 
-      const vp = { x: W / 2, y: hor }; // vanishing point
-      const numVLines = 15;
-      const numHLines = 7;
+      const vp = { x: W / 2, y: hor };
+      const floorH = H - hor;
 
       ctx.save();
-      ctx.globalAlpha = 0.65;
+      ctx.globalAlpha = 0.7;
 
-      // Vertical lines
-      for (let i = 0; i <= numVLines; i++) {
-        const t = i / numVLines; // 0..1
-        const bx = W * t;       // spread at bottom
-        const vLineGrad = ctx.createLinearGradient(vp.x, vp.y, bx, H);
-        vLineGrad.addColorStop(0, 'rgba(255, 45, 149, 0.2)');
-        vLineGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.5)');
-        vLineGrad.addColorStop(1, 'rgba(0, 240, 255, 0.7)');
-        ctx.strokeStyle = vLineGrad;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(vp.x, vp.y);
-        ctx.lineTo(bx, H);
-        ctx.stroke();
-      }
+      // Horizontal lines — true 1/Z perspective projection
+      // y = hor + K/Z, where K = floorH means Z=1 puts the line at the bottom
+      // Animating by subtracting offset from Z makes near lines rush forward fast,
+      // far lines creep slowly — correct perspective speed behaviour.
+      const K = floorH * 0.95;
+      const numHLines = 14;
+      const hOffset = this._gridOffset % 1;
 
-      // Horizontal lines with perspective squish + scroll animation
-      const offset = this._gridOffset % 1;
-      for (let r = 0; r < numHLines; r++) {
-        const frac = (r + offset) / numHLines;
-        const y = hor + (H - hor) * frac * frac;
-        if (y < hor || y > H) continue;
-        // Interpolate color from magenta (near horizon) to cyan (near bottom)
-        const mix = frac;
-        const hLineGrad = ctx.createLinearGradient(0, y, W, y);
-        hLineGrad.addColorStop(0,   'rgba(0, 240, 255, 0)');
-        hLineGrad.addColorStop(0.15, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.60)`);
-        hLineGrad.addColorStop(0.85, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.60)`);
-        hLineGrad.addColorStop(1,   'rgba(0, 240, 255, 0)');
-        ctx.strokeStyle = hLineGrad;
+      for (let i = 1; i <= numHLines; i++) {
+        const Z = i - hOffset;
+        if (Z < 0.05) continue;        // behind camera
+        const y = hor + K / Z;
+        if (y > H + 1 || y < hor) continue;
+
+        // Lines near bottom (large y) are brighter/more cyan; near horizon = dimmer/magenta
+        const d = (y - hor) / floorH;  // 0 = horizon, 1 = bottom
+        const r = Math.round(255 * (1 - d));
+        const g = Math.round(45  * (1 - d) + 240 * d);
+        const b = Math.round(149 * (1 - d) + 255 * d);
+        const a = (0.25 + d * 0.45).toFixed(2);
+
+        const hGrad = ctx.createLinearGradient(0, y, W, y);
+        hGrad.addColorStop(0,    'rgba(0,0,0,0)');
+        hGrad.addColorStop(0.12, `rgba(${r},${g},${b},${a})`);
+        hGrad.addColorStop(0.88, `rgba(${r},${g},${b},${a})`);
+        hGrad.addColorStop(1,    'rgba(0,0,0,0)');
+        ctx.strokeStyle = hGrad;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+
+      // Vertical lines — all converge to single VP at (W/2, hor)
+      // Fan edge-to-edge at the bottom for the classic road perspective look
+      const numVLines = 20;
+      for (let i = 0; i <= numVLines; i++) {
+        const t = i / numVLines;          // 0..1 left to right
+        const bx = W * t;                 // bottom x: full canvas width
+        const d = Math.abs(t - 0.5) * 2; // 0 = center, 1 = edge
+
+        const vGrad = ctx.createLinearGradient(vp.x, vp.y, bx, H);
+        vGrad.addColorStop(0,   'rgba(255, 45, 149, 0.1)');
+        vGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.4)');
+        vGrad.addColorStop(1,   `rgba(0, 240, 255, ${(0.5 + d * 0.2).toFixed(2)})`);
+        ctx.strokeStyle = vGrad;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(vp.x, vp.y);
+        ctx.lineTo(bx, H);
         ctx.stroke();
       }
 
