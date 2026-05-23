@@ -90,6 +90,33 @@
         </div>
       </section>
 
+      <section class="tele tele-vapor" aria-label="Vapor telemetry" aria-hidden="true">
+        <div class="tele-frame">
+          <div class="tele-top">╭─ <b>∇ grid//lock</b><span class="tele-fill"></span>╮</div>
+          <div class="tele-body">
+            <div class="tele-row">
+              <span class="tele-k">lat</span>
+              <span class="tele-v"><span id="v-lat">23.7</span>°N</span>
+            </div>
+            <div class="tele-row">
+              <span class="tele-k">lon</span>
+              <span class="tele-v"><span id="v-lon">118.2</span>°W</span>
+            </div>
+            <div class="vapor-bar-row">
+              <span class="vapor-bar-label">sync</span>
+              <div class="vapor-bar-track"><div class="vapor-bar-fill" id="v-sync"></div></div>
+            </div>
+            <div class="vapor-bar-row">
+              <span class="vapor-bar-label">phase</span>
+              <div class="vapor-bar-track"><div class="vapor-bar-fill vapor-bar-fill-2" id="v-phase"></div></div>
+            </div>
+            <div class="vapor-glitch" data-text="LOCKED">LOCKED</div>
+            <div class="vapor-ascii">▮▮▮▮▮▮▮▯░▒▓</div>
+          </div>
+          <div class="tele-bot">╰<span class="tele-fill"></span>╯</div>
+        </div>
+      </section>
+
       <section class="page-nav-links" aria-label="Page navigation">
         <div class="links-grid">
           <a class="link-row" href="experience.html">
@@ -178,6 +205,7 @@
   requestAnimationFrame(function () {
     const theme = document.documentElement.getAttribute('data-theme') || 'mission';
     RRT.init(container, RRT_THEMES[theme] || RRT_THEMES['mission']);
+    if (theme === 'vapor') startVaporTelemetry();
 
     // Telemetry
     const elDist  = document.getElementById('t-dist');
@@ -208,12 +236,49 @@
   });
 
   // Theme switch
+  var vaporInterval = null;
+  function startVaporTelemetry() {
+    var lat = 23.7, lon = 118.2;
+    var syncStart = Date.now();
+    var phaseStart = Date.now() - 3500;
+    function tick() {
+      lat += (Math.random() * 0.2 - 0.1);
+      lon += (Math.random() * 0.2 - 0.1);
+      lat = Math.round(lat * 10) / 10;
+      lon = Math.round(lon * 10) / 10;
+      var latEl = document.getElementById('v-lat');
+      var lonEl = document.getElementById('v-lon');
+      if (latEl) latEl.textContent = lat.toFixed(1);
+      if (lonEl) lonEl.textContent = lon.toFixed(1);
+    }
+    function animBars() {
+      var syncEl = document.getElementById('v-sync');
+      var phaseEl = document.getElementById('v-phase');
+      if (syncEl) syncEl.style.width = ((((Date.now() - syncStart) % 12000) / 12000) * 100) + '%';
+      if (phaseEl) phaseEl.style.width = ((((Date.now() - phaseStart) % 7000) / 7000) * 100) + '%';
+      if (document.documentElement.getAttribute('data-theme') === 'vapor') requestAnimationFrame(animBars);
+    }
+    tick();
+    vaporInterval = setInterval(tick, 5000 + Math.random() * 2000);
+    animBars();
+  }
+  function stopVaporTelemetry() {
+    if (vaporInterval) { clearInterval(vaporInterval); vaporInterval = null; }
+  }
+
   function setTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
     document.querySelectorAll('[data-set]').forEach(function (b) {
       b.classList.toggle('on', b.dataset.set === t);
     });
     if (window.RRT) RRT.setTheme(RRT_THEMES[t] || RRT_THEMES['mission']);
+    // Vapor sidebar
+    var vaporTele = document.querySelector('.tele-vapor');
+    var stdTele   = document.querySelector('.tele:not(.tele-vapor)');
+    if (vaporTele) vaporTele.setAttribute('aria-hidden', t !== 'vapor' ? 'true' : 'false');
+    if (stdTele)   stdTele.setAttribute('aria-hidden',   t === 'vapor' ? 'true' : 'false');
+    if (t === 'vapor') startVaporTelemetry();
+    else stopVaporTelemetry();
   }
 
   document.getElementById('theme-switch').addEventListener('click', function (e) {

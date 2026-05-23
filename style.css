@@ -1175,6 +1175,75 @@ button.patent-row {
   }
 }
 
+/* ============================================================
+   Vapor sidebar — hidden unless vapor theme active
+   ============================================================ */
+
+.tele-vapor { display: none; }
+[data-theme="vapor"] .tele-vapor { display: block; }
+[data-theme="vapor"] .tele:not(.tele-vapor) { display: none; }
+
+/* Vapor bars */
+.vapor-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+.vapor-bar-label {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  min-width: 28px;
+}
+.vapor-bar-track {
+  flex: 1;
+  height: 4px;
+  background: var(--border-soft);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.vapor-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--accent);
+  transition: width 0.3s linear;
+}
+.vapor-bar-fill-2 {
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 6px var(--accent-2);
+}
+
+/* Glitch text */
+.vapor-glitch {
+  position: relative;
+  color: var(--accent-2);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  text-shadow: 0 0 8px var(--accent-2);
+}
+.vapor-glitch::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 1px;
+  color: var(--accent);
+  opacity: 0.5;
+  clip-path: inset(30% 0 50% 0);
+}
+
+/* ASCII texture */
+.vapor-ascii {
+  font-size: 9px;
+  color: var(--faint);
+  letter-spacing: 0.05em;
+}
+
 /* Desktop: 1024px+ */
 @media (min-width: 64rem) {
   h1 { font-size: var(--font-size-3xl); }
