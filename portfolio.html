@@ -54,7 +54,7 @@
   <main id="main-content" class="page-layout">
     <header>
       <h1>Portfolio</h1>
-      <p>Publications, patents, and projects spanning autonomous vehicle safety, machine learning, and generative AI.</p>
+      <p>Publications, patents, and open-source projects.</p>
     </header>
 
     <section aria-label="Publications">
@@ -236,9 +236,9 @@
           <a href="https://github.com/jbpacker/surnamerator" class="btn btn-outline">GitHub →</a>
         </div>
         <h4 class="project-detail-heading">Challenges</h4>
-        <p class="project-detail-body">My partner wanted control over the first and final characters of generated names. First characters were easy — initialize the prompt with them. Final characters were harder. I modified the dataset to embed "hints" of the final characters before the regular model input, giving the transformer enough context to predict the ending correctly. It worked remarkably well.</p>
+        <p class="project-detail-body">My partner wanted control over the first and final characters of generated names. First characters were easy: initialize the prompt with them. Final characters were harder. I modified the dataset to embed "hints" of the final characters before the regular model input, giving the transformer enough context to predict the ending correctly.</p>
         <h4 class="project-detail-heading">What I Learned</h4>
-        <p class="project-detail-body">I got my hands dirty coding a transformer from scratch, something I had only used via libraries or read about in papers before this project.</p>
+        <p class="project-detail-body">Coded a transformer from scratch — previously I'd only used them via libraries or read about them in papers.</p>
         <h4 class="project-detail-heading">Resources</h4>
         <p class="project-detail-body">Special thanks to Andrej Karpathy for inspiring this project with his <a href="https://karpathy.ai/zero-to-hero.html">Zero-to-Hero series</a>.</p>
       </article>
@@ -287,15 +287,15 @@
             >
           </picture>
         </div>
-        <p class="project-desc">I used DreamBooth to fine-tune a Stable Diffusion model on my cat Azriel and generate a huge variety of AI portraits. Can you tell which is the real photo?</p>
+        <p class="project-desc">Used DreamBooth to fine-tune a Stable Diffusion model on my cat Azriel and generate AI portraits. Can you tell which is the real photo?</p>
         <div class="card-links">
           <a href="https://huggingface.co/jefsnacker/azzy" class="btn">See it in action</a>
           <a href="https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/sd_dreambooth_training.ipynb" class="btn btn-outline">Colab notebook →</a>
         </div>
         <h4 class="project-detail-heading">Challenges</h4>
-        <p class="project-detail-body">Determining training hyperparameters was a huge undertaking. I <a href="https://jefsnacker.medium.com/dreambooth-hyperparameter-guide-d8b7cd264245">wrote a Medium article</a> outlining the configurations that worked well.</p>
+        <p class="project-detail-body">Determining training hyperparameters took significant iteration. I <a href="https://jefsnacker.medium.com/dreambooth-hyperparameter-guide-d8b7cd264245">wrote a Medium article</a> outlining the configurations that worked.</p>
         <h4 class="project-detail-heading">What I Learned</h4>
-        <p class="project-detail-body">Getting hands-on experience with diffusion models was great. I got a reminder of the importance of experiment tracking — notating training images, steps, and learning rate helped me produce more consistent results.</p>
+        <p class="project-detail-body">Reinforced the importance of experiment tracking. Notating training images, steps, and learning rate produced more consistent results.</p>
         <h4 class="project-detail-heading">Resources</h4>
         <p class="project-detail-body">The <a href="https://github.com/huggingface/diffusion-models-class#">HuggingFace diffusers class</a> provided a great foundation. The Azriel model won 2nd place in their DreamBooth competition.</p>
       </article>
@@ -313,15 +313,15 @@
             height="934"
           >
         </picture>
-        <p class="project-desc">A Javascript implementation of a Rapidly-Exploring Random Tree (RRT). The rocket ship uses a search tree to decide how to move around in space and get as close as possible to an orbiting planet.</p>
+        <p class="project-desc">A JavaScript implementation of a Rapidly-Exploring Random Tree (RRT). The rocket uses the search tree to navigate space and intercept an orbiting planet.</p>
         <div class="card-links">
           <a href="https://www.jefpacker.ai/" class="btn">See it in action</a>
           <a href="https://github.com/jbpacker/paths" class="btn btn-outline">GitHub →</a>
         </div>
         <h4 class="project-detail-heading">Challenges</h4>
-        <p class="project-detail-body">Determining a simple and decent search methodology was tricky. I created a node queue prioritized by Euclidean distance to the planet. The Euclidean metric causes problems where the closest node can point away from the planet, making that path more costly than others.</p>
+        <p class="project-detail-body">Determining an effective search methodology was tricky. I created a node queue prioritized by Euclidean distance to the planet. The Euclidean metric causes problems where the closest node can point away from the planet, making that path more costly than others.</p>
         <h4 class="project-detail-heading">What I Learned</h4>
-        <p class="project-detail-body">I had never written code for a website before, so this was a fun opportunity to write JavaScript and understand how it integrates with HTML and no-code platforms like Webflow.</p>
+        <p class="project-detail-body">First time writing JavaScript for the web. Learned how it integrates with HTML.</p>
       </article>
 
       <article class="project-card">
@@ -343,9 +343,9 @@
           <a href="https://github.com/jbpacker/scribe" class="btn btn-outline">GitHub →</a>
         </div>
         <h4 class="project-detail-heading">Challenges</h4>
-        <p class="project-detail-body">The hackathon was only two days. One core challenge was getting real-time data from web conferencing software — Zoom, Meet, and others don't expose good APIs for this. I ended up using a plugin that read subtitles off a live Google Meet page. Getting raw audio would have made a much better product.</p>
+        <p class="project-detail-body">The hackathon was only two days. Getting real-time data from web conferencing software was the main obstacle — Zoom, Meet, and others don't expose good APIs for this. I ended up using a plugin that read subtitles off a live Google Meet page. Getting raw audio would have made a much better product.</p>
         <h4 class="project-detail-heading">What I Learned</h4>
-        <p class="project-detail-body">Surprisingly, all the AI-related parts felt trivial. The hardest aspects were building the website and piping data around. Never underestimate boilerplate code.</p>
+        <p class="project-detail-body">The AI-related parts were trivial. The hardest aspects were building the website and piping data around. Never underestimate boilerplate code.</p>
       </article>
 
     </section>
