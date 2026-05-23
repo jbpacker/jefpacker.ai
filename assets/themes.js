@@ -6,46 +6,222 @@ window.RRT_THEMES = {
   // ============================================================
   vapor: {
     name: 'vapor',
+    cfg: { skyZone: 0.44 },
     treeColor: 'rgba(120, 90, 180, 0.32)',
     treeWidth: 1,
     pathColor: '#ff2d95',
     pathWidth: 2,
     drawBg(ctx, canvas) {
-      // Subtle vertical gradient
-      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      g.addColorStop(0, 'rgba(20, 8, 40, 0)');
-      g.addColorStop(1, 'rgba(60, 18, 90, 0.18)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const W = canvas.width, H = canvas.height;
+      const hor = H * this.cfg.skyZone;
+
+      // ── Sky gradient ─────────────────────────────────────────
+      const sky = ctx.createLinearGradient(0, 0, 0, hor);
+      sky.addColorStop(0,   '#050018');
+      sky.addColorStop(0.6, '#18003a');
+      sky.addColorStop(1,   'rgba(255, 45, 149, 0.4)');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, W, hor);
+
+      // ── Floor background ─────────────────────────────────────
+      const floor = ctx.createLinearGradient(0, hor, 0, H);
+      floor.addColorStop(0, '#220055');
+      floor.addColorStop(1, '#0a0414');
+      ctx.fillStyle = floor;
+      ctx.fillRect(0, hor, W, H - hor);
+
+      // ── Sun glow ─────────────────────────────────────────────
+      const sunR = Math.min(W, H) * 0.13;
+      const sunX = W / 2;
+      const sunY = hor + sunR * 0.15;
+      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 2.2);
+      glow.addColorStop(0,   'rgba(255, 200, 0, 0.35)');
+      glow.addColorStop(0.4, 'rgba(255, 45, 149, 0.2)');
+      glow.addColorStop(1,   'rgba(255, 45, 149, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunR * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ── Retrowave sun (half-circle) ───────────────────────────
+      const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY + sunR * 0.15);
+      sunGrad.addColorStop(0,   '#ffee00');
+      sunGrad.addColorStop(0.45,'#ff8800');
+      sunGrad.addColorStop(1,   '#ff2d95');
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunR, Math.PI, 0); // top half-circle
+      ctx.lineTo(sunX + sunR, sunY);
+      ctx.lineTo(sunX - sunR, sunY);
+      ctx.closePath();
+      ctx.fillStyle = sunGrad;
+      ctx.fill();
+
+      // Horizontal cutout lines across the sun
+      ctx.fillStyle = '#050018';
+      const numCuts = 6;
+      for (let i = 0; i < numCuts; i++) {
+        const t = (i + 1) / (numCuts + 1);
+        const lineY = sunY - sunR * (1 - t);
+        const halfW = Math.sqrt(Math.max(0, sunR * sunR - (sunY - lineY) * (sunY - lineY)));
+        ctx.fillRect(sunX - halfW, lineY, halfW * 2, 3);
+      }
+      ctx.restore();
+
+      // ── Grid floor ───────────────────────────────────────────
+      if (this._gridOffset === undefined) this._gridOffset = 0;
+      this._gridOffset += 0.003;
+
+      const vp = { x: W / 2, y: hor }; // vanishing point
+      const numVLines = 15;
+      const numHLines = 7;
+
+      ctx.save();
+      ctx.globalAlpha = 0.45;
+
+      // Vertical lines
+      for (let i = 0; i <= numVLines; i++) {
+        const t = i / numVLines; // 0..1
+        const bx = W * t;       // spread at bottom
+        const vLineGrad = ctx.createLinearGradient(vp.x, vp.y, bx, H);
+        vLineGrad.addColorStop(0, 'rgba(255, 45, 149, 0)');
+        vLineGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.5)');
+        vLineGrad.addColorStop(1, 'rgba(0, 240, 255, 0.7)');
+        ctx.strokeStyle = vLineGrad;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(vp.x, vp.y);
+        ctx.lineTo(bx, H);
+        ctx.stroke();
+      }
+
+      // Horizontal lines with perspective squish + scroll animation
+      const offset = this._gridOffset % 1;
+      for (let r = 0; r < numHLines; r++) {
+        const frac = (r + offset) / numHLines;
+        const y = hor + (H - hor) * frac * frac;
+        if (y < hor || y > H) continue;
+        // Interpolate color from magenta (near horizon) to cyan (near bottom)
+        const mix = frac;
+        const hLineGrad = ctx.createLinearGradient(0, y, W, y);
+        hLineGrad.addColorStop(0,   'rgba(0, 240, 255, 0)');
+        hLineGrad.addColorStop(0.15, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.55)`);
+        hLineGrad.addColorStop(0.85, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.55)`);
+        hLineGrad.addColorStop(1,   'rgba(0, 240, 255, 0)');
+        ctx.strokeStyle = hLineGrad;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
+      // ── Palm tree silhouettes ─────────────────────────────────
+      const drawPalm = (x, baseY, lean, color, glowColor) => {
+        const trunkH = H * 0.22;
+        const tipX = x + lean * trunkH * 0.6;
+        const tipY = baseY - trunkH;
+        ctx.save();
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = glowColor;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        // Curved trunk
+        ctx.beginPath();
+        ctx.moveTo(x, baseY);
+        ctx.quadraticCurveTo(x + lean * trunkH * 0.3, baseY - trunkH * 0.55, tipX, tipY);
+        ctx.stroke();
+        // Fronds
+        const numFronds = 6;
+        for (let f = 0; f < numFronds; f++) {
+          const angle = (f / numFronds) * Math.PI - Math.PI * 0.1 + (lean > 0 ? 0.15 : -0.15);
+          const fLen = trunkH * 0.45;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(tipX, tipY);
+          ctx.quadraticCurveTo(
+            tipX + Math.cos(angle) * fLen * 0.55,
+            tipY + Math.sin(angle) * fLen * 0.55 - fLen * 0.15,
+            tipX + Math.cos(angle) * fLen,
+            tipY + Math.sin(angle) * fLen
+          );
+          ctx.stroke();
+        }
+        ctx.restore();
+      };
+
+      // Left palm — magenta
+      drawPalm(W * 0.04, H, 0.45, '#ff2d95', 'rgba(255,45,149,0.6)');
+      // Right palm — cyan (leaning left)
+      drawPalm(W * 0.96, H, -0.45, '#00f0ff', 'rgba(0,240,255,0.6)');
+      // Second right palm, slightly inset — magenta tint
+      drawPalm(W * 0.88, H * 0.97, -0.3, 'rgba(255,45,149,0.55)', 'rgba(255,45,149,0.3)');
     },
     drawPlanet(ctx, pos, phi) {
-      const r = 18;
+      const tip = 18;   // center-to-tip of diamond
+      const box = 28;   // half-size of corner-bracket bounding box
+      const bLen = 8;   // bracket arm length
+
       // Outer glow
-      const grd = ctx.createRadialGradient(pos.x, pos.y, 2, pos.x, pos.y, r * 2.4);
-      grd.addColorStop(0, 'rgba(0, 240, 255, 0.55)');
-      grd.addColorStop(0.5, 'rgba(255, 45, 149, 0.18)');
-      grd.addColorStop(1, 'rgba(255, 45, 149, 0)');
+      const grd = ctx.createRadialGradient(pos.x, pos.y, 2, pos.x, pos.y, box * 1.8);
+      grd.addColorStop(0,   'rgba(0, 240, 255, 0.4)');
+      grd.addColorStop(0.5, 'rgba(255, 45, 149, 0.15)');
+      grd.addColorStop(1,   'rgba(255, 45, 149, 0)');
       ctx.fillStyle = grd;
-      ctx.beginPath(); ctx.arc(pos.x, pos.y, r * 2.4, 0, Math.PI * 2); ctx.fill();
-      // Crosshair reticle
-      ctx.strokeStyle = '#00f0ff';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2); ctx.stroke();
-      ctx.setLineDash([]);
-      // Inner planet body
-      ctx.fillStyle = '#ff2d95';
-      ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2); ctx.fill();
-      // Rotating tick
+      ctx.beginPath(); ctx.arc(pos.x, pos.y, box * 1.8, 0, Math.PI * 2); ctx.fill();
+
       ctx.save();
-      ctx.translate(pos.x, pos.y); ctx.rotate(phi);
+      ctx.translate(pos.x, pos.y);
+
+      // Diamond shape
+      ctx.save();
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#00f0ff';
       ctx.strokeStyle = '#00f0ff';
-      ctx.beginPath(); ctx.moveTo(r, 0); ctx.lineTo(r + 5, 0); ctx.stroke();
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -tip);
+      ctx.lineTo(tip, 0);
+      ctx.lineTo(0, tip);
+      ctx.lineTo(-tip, 0);
+      ctx.closePath();
+      ctx.stroke();
       ctx.restore();
-      // Label
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.85)';
-      ctx.font = "10px 'IBM Plex Mono', monospace";
-      ctx.fillText('TGT', pos.x + r + 8, pos.y - r);
+
+      // Corner brackets (subtle phi-driven rotation)
+      ctx.save();
+      ctx.rotate(phi * 0.25);
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = '#00f0ff';
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.75)';
+      ctx.lineWidth = 1.2;
+      const corners = [
+        [-box, -box, 1, 1],
+        [ box, -box,-1, 1],
+        [ box,  box,-1,-1],
+        [-box,  box, 1,-1],
+      ];
+      for (const [cx, cy, sx, sy] of corners) {
+        ctx.beginPath();
+        ctx.moveTo(cx + sx * bLen, cy);
+        ctx.lineTo(cx, cy);
+        ctx.lineTo(cx, cy + sy * bLen);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Center dot — magenta
+      ctx.save();
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#ff2d95';
+      ctx.fillStyle = '#ff2d95';
+      ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      ctx.restore();
     },
     drawRocket(ctx, pos) {
       ctx.save();
