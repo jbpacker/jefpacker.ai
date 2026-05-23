@@ -119,8 +119,19 @@ window.RRT_THEMES = {
         const b = Math.round(149 * (1 - d) + 255 * d);
         const a = (0.45 + d * 0.4).toFixed(2);
 
-        ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
+        // Edge fade scales with distance: full-width near viewer, narrows to point near horizon
+        const fade = (1 - d) * 0.28;
         ctx.lineWidth = 1;
+        if (fade < 0.005) {
+          ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
+        } else {
+          const hGrad = ctx.createLinearGradient(0, y, W, y);
+          hGrad.addColorStop(0,          'rgba(0,0,0,0)');
+          hGrad.addColorStop(fade,       `rgba(${r},${g},${b},${a})`);
+          hGrad.addColorStop(1 - fade,   `rgba(${r},${g},${b},${a})`);
+          hGrad.addColorStop(1,          'rgba(0,0,0,0)');
+          ctx.strokeStyle = hGrad;
+        }
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(W, y);
