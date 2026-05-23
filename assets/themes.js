@@ -119,9 +119,9 @@ window.RRT_THEMES = {
         const b = Math.round(149 * (1 - d) + 255 * d);
         const a = (0.45 + d * 0.4).toFixed(2);
 
-        // Edge fade weighted toward horizon: bottom half stays ~full width,
-        // only top ~30% narrows visibly. Quadratic curve concentrates effect near VP.
-        const fade = Math.pow(1 - d, 2.5) * 0.4;
+        // Bottom 40% of floor (d > 0.6): no fade, full edge-to-edge.
+        // Top 60% (d <= 0.6): quadratic taper toward horizon, max 0.4 at VP.
+        const fade = d > 0.6 ? 0 : Math.pow((0.6 - d) / 0.6, 2.5) * 0.4;
         ctx.lineWidth = 1;
         if (fade < 0.005) {
           ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
