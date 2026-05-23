@@ -95,7 +95,7 @@ window.RRT_THEMES = {
       // Animating by subtracting offset from Z makes near lines rush forward fast,
       // far lines creep slowly — correct perspective speed behaviour.
       const K = floorH * 0.95;
-      const numHLines = 14;
+      const numHLines = 50;
       const hOffset = this._gridOffset % 1;
 
       for (let i = 1; i <= numHLines; i++) {
