@@ -11,6 +11,7 @@ window.RRT_THEMES = {
     treeWidth: 1,
     pathColor: '#ff2d95',
     pathWidth: 2,
+    _gridOffset: 0,
     drawBg(ctx, canvas) {
       const W = canvas.width, H = canvas.height;
       const hor = H * this.cfg.skyZone;
@@ -51,8 +52,6 @@ window.RRT_THEMES = {
       ctx.save();
       ctx.beginPath();
       ctx.arc(sunX, sunY, sunR, Math.PI, 0); // top half-circle
-      ctx.lineTo(sunX + sunR, sunY);
-      ctx.lineTo(sunX - sunR, sunY);
       ctx.closePath();
       ctx.fillStyle = sunGrad;
       ctx.fill();
@@ -69,7 +68,6 @@ window.RRT_THEMES = {
       ctx.restore();
 
       // ── Grid floor ───────────────────────────────────────────
-      if (this._gridOffset === undefined) this._gridOffset = 0;
       this._gridOffset += 0.003;
 
       const vp = { x: W / 2, y: hor }; // vanishing point
@@ -116,7 +114,6 @@ window.RRT_THEMES = {
         ctx.stroke();
       }
 
-      ctx.globalAlpha = 1;
       ctx.restore();
 
       // ── Palm tree silhouettes ─────────────────────────────────
