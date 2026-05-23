@@ -170,7 +170,8 @@
     updatePosition(theta) {
       var w = RRT.canvas.width, h = RRT.canvas.height;
       this.position.x = 0.5 * w * (1 + RRT.cfg.planet_pct * Math.sin(theta));
-      this.position.y = 0.5 * h * (1 + RRT.cfg.planet_pct * Math.cos(theta));
+      var skyH = RRT.cfg.skyZone ? h * RRT.cfg.skyZone : h;
+      this.position.y = 0.5 * skyH * (1 + RRT.cfg.planet_pct * Math.cos(theta));
     }
     draw(ctx) {
       this.phi += RRT.cfg.planet_spin;
@@ -197,6 +198,7 @@
       target_sleep: 40,
       finish_move: 5,
       robot_step: 1.5,
+      skyZone: 0,
     },
     theme: null,
     canvas: null, ctx: null,
