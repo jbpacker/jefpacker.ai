@@ -739,6 +739,8 @@ a.content-link:hover { color: var(--color-text); }
   position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
   background-image: linear-gradient(
     to bottom,
+    transparent var(--tl-line-start, 0px),
+    var(--color-accent) var(--tl-line-start, 0px),
     var(--color-accent) var(--tl-progress, 0px),
     var(--color-border) var(--tl-progress, 0px),
     var(--color-border) var(--tl-line-end, 100%),

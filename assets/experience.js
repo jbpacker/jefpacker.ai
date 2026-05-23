@@ -9,6 +9,13 @@
 
   // Cache dot positions relative to timeline top — recomputed on resize only, not per frame
   var dotOffsets = [];
+  var firstDotOffset = 0;
+  var lastDotOffset = 0;
+  var triggerY = 0;
+  var maxScroll = 0;
+  var scrollAtFirst = 0;
+  var scrollAtLast = 0;
+  var shortDoc = false;
   function cacheDotOffsets() {
     var tlTop = timeline.getBoundingClientRect().top + window.scrollY;
     dotOffsets = entries.map(function (entry) {
@@ -16,18 +23,30 @@
       var r = dot.getBoundingClientRect();
       return r.top + r.height / 2 + window.scrollY - tlTop;
     });
-    // Set line end so gradient cuts off below the last dot
-    timeline.style.setProperty('--tl-line-end', dotOffsets[dotOffsets.length - 1] + 'px');
+    firstDotOffset = dotOffsets[0];
+    lastDotOffset = dotOffsets[dotOffsets.length - 1];
+    triggerY = window.innerHeight * 0.4;
+    maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    scrollAtFirst = Math.max(0, (tlTop + firstDotOffset) - triggerY);
+    scrollAtLast = Math.min(maxScroll, (tlTop + lastDotOffset) - triggerY);
+    shortDoc = scrollAtLast <= scrollAtFirst;
+    // Clip gradient to [firstDot, lastDot]
+    timeline.style.setProperty('--tl-line-start', firstDotOffset + 'px');
+    timeline.style.setProperty('--tl-line-end', lastDotOffset + 'px');
   }
 
   function update() {
-    // One getBoundingClientRect() per frame (was 16)
-    var tlRect = timeline.getBoundingClientRect();
-    var triggerY = window.innerHeight * 0.4;
-    var lineHeight = Math.min(
-      Math.max(0, triggerY - tlRect.top),
-      dotOffsets[dotOffsets.length - 1]
-    );
+    var scrollY = window.scrollY;
+    var progress;
+    if (shortDoc) {
+      // Fallback: doc too short for normal trigger mapping
+      progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+    } else {
+      progress = (scrollY - scrollAtFirst) / (scrollAtLast - scrollAtFirst);
+      if (progress < 0) progress = 0;
+      else if (progress > 1) progress = 1;
+    }
+    var lineHeight = firstDotOffset + progress * (lastDotOffset - firstDotOffset);
 
     // Find current entry using cached offsets — pure arithmetic, no layout reads
     var idx = 0;
