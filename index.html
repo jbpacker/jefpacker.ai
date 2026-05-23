@@ -237,13 +237,17 @@
 
   // Theme switch
   var vaporInterval = null;
+  var vaporRaf = null;
   function startVaporTelemetry() {
+    if (vaporInterval) return;  // already running
     var lat = 23.7, lon = 118.2;
     var syncStart = Date.now();
     var phaseStart = Date.now() - 3500;
     function tick() {
       lat += (Math.random() * 0.2 - 0.1);
       lon += (Math.random() * 0.2 - 0.1);
+      lat = Math.max(0, Math.min(90, lat));
+      lon = Math.max(0, Math.min(180, lon));
       lat = Math.round(lat * 10) / 10;
       lon = Math.round(lon * 10) / 10;
       var latEl = document.getElementById('v-lat');
@@ -256,14 +260,15 @@
       var phaseEl = document.getElementById('v-phase');
       if (syncEl) syncEl.style.width = ((((Date.now() - syncStart) % 12000) / 12000) * 100) + '%';
       if (phaseEl) phaseEl.style.width = ((((Date.now() - phaseStart) % 7000) / 7000) * 100) + '%';
-      if (document.documentElement.getAttribute('data-theme') === 'vapor') requestAnimationFrame(animBars);
+      vaporRaf = requestAnimationFrame(animBars);
     }
     tick();
     vaporInterval = setInterval(tick, 5000 + Math.random() * 2000);
-    animBars();
+    vaporRaf = requestAnimationFrame(animBars);
   }
   function stopVaporTelemetry() {
     if (vaporInterval) { clearInterval(vaporInterval); vaporInterval = null; }
+    if (vaporRaf) { cancelAnimationFrame(vaporRaf); vaporRaf = null; }
   }
 
   function setTheme(t) {
