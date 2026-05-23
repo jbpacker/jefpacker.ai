@@ -120,8 +120,8 @@ window.RRT_THEMES = {
         const a = (0.45 + d * 0.4).toFixed(2);
 
         // Bottom 40% of floor (d > 0.6): no fade, full edge-to-edge.
-        // Top 60% (d <= 0.6): quadratic taper toward horizon, max 0.4 at VP.
-        const fade = d > 0.6 ? 0 : Math.pow((0.6 - d) / 0.6, 2.5) * 0.4;
+        // Top 60% (d <= 0.6): linear taper toward horizon, max 0.4 at VP.
+        const fade = d > 0.6 ? 0 : (0.6 - d) / 0.6 * 0.4;
         ctx.lineWidth = 1;
         if (fade < 0.005) {
           ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
