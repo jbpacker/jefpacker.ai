@@ -91,18 +91,26 @@ window.RRT_THEMES = {
       ctx.globalAlpha = 0.7;
 
       // Horizontal lines — true 1/Z perspective projection
-      // y = hor + K/Z, where K = floorH means Z=1 puts the line at the bottom
+      // K = floorH so Z=1 lands exactly at the canvas bottom.
       // Animating by subtracting offset from Z makes near lines rush forward fast,
       // far lines creep slowly — correct perspective speed behaviour.
-      const K = floorH * 0.95;
+      const K = floorH;
       const numHLines = 50;
       const hOffset = this._gridOffset % 1;
+
+      // Static horizon seam — closes the gap between farthest animated line and horizon
+      ctx.strokeStyle = 'rgba(255,45,149,0.18)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, hor);
+      ctx.lineTo(W, hor);
+      ctx.stroke();
 
       for (let i = 1; i <= numHLines; i++) {
         const Z = i - hOffset;
         if (Z < 0.05) continue;        // behind camera
         const y = hor + K / Z;
-        if (y > H + 1 || y < hor) continue;
+        if (y > H + 2 || y < hor) continue;
 
         // Lines near bottom (large y) are brighter/more cyan; near horizon = dimmer/magenta
         const d = (y - hor) / floorH;  // 0 = horizon, 1 = bottom
