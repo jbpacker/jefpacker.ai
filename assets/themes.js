@@ -31,45 +31,55 @@ window.RRT_THEMES = {
       ctx.fillStyle = floor;
       ctx.fillRect(0, hor, W, H - hor);
 
-      // ── Sun glow ─────────────────────────────────────────────
+      // ── Sun (clipped to sky zone so it never bleeds below horizon) ────
       const sunR = Math.min(W, H) * 0.13;
       const sunX = W / 2;
-      const sunY = hor + sunR * 0.15;
-      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 2.2);
+      const sunY = hor;  // center sits exactly at horizon
+
+      ctx.save();
+      // Clip everything sun-related to sky zone only (y < hor)
+      // This makes the sun appear behind the floor/grid with a clean horizon cut
+      ctx.beginPath();
+      ctx.rect(0, 0, W, hor);
+      ctx.clip();
+
+      // Glow behind sun
+      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 2.4);
       glow.addColorStop(0,   'rgba(255, 200, 0, 0.35)');
       glow.addColorStop(0.4, 'rgba(255, 45, 149, 0.2)');
       glow.addColorStop(1,   'rgba(255, 45, 149, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(sunX, sunY, sunR * 2.2, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, sunR * 2.4, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── Retrowave sun (arc strips with transparent gaps) ─────
-      const stripColors = ['#ffee00', '#ffcc00', '#ff9900', '#ff6600', '#ff3d44', '#ff2d80', '#ff2d95'];
-      const numStrips = stripColors.length;
-      const totalBands = numStrips * 2 - 1; // alternating color/gap = 13
+      // Sun: clip to half-circle, fill gradient, then draw gap lines
       ctx.save();
-      // Clip to upper half of circle so we don't draw below horizon
       ctx.beginPath();
-      ctx.rect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
+      ctx.arc(sunX, sunY, sunR, Math.PI, 0);  // upper half-circle path
+      ctx.closePath();
       ctx.clip();
-      for (let i = 0; i < totalBands; i++) {
-        if (i % 2 === 1) continue; // skip gap bands
-        const stripIdx = i / 2;
-        const y0 = sunY - sunR + (i / totalBands) * sunR;
-        const y1 = sunY - sunR + ((i + 1) / totalBands) * sunR;
-        const hw0 = Math.sqrt(Math.max(0, sunR * sunR - (sunY - y0) * (sunY - y0)));
-        const hw1 = Math.sqrt(Math.max(0, sunR * sunR - (sunY - y1) * (sunY - y1)));
-        ctx.beginPath();
-        ctx.moveTo(sunX - hw0, y0);
-        ctx.lineTo(sunX + hw0, y0);
-        ctx.lineTo(sunX + hw1, y1);
-        ctx.lineTo(sunX - hw1, y1);
-        ctx.closePath();
-        ctx.fillStyle = stripColors[stripIdx];
-        ctx.fill();
+
+      // Gradient fill (yellow → orange → magenta top to bottom)
+      const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY);
+      sunGrad.addColorStop(0,    '#ffee00');
+      sunGrad.addColorStop(0.45, '#ff8800');
+      sunGrad.addColorStop(1,    '#ff2d95');
+      ctx.fillStyle = sunGrad;
+      ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
+
+      // 4 horizontal gap lines in the lower 60% of the sun
+      // (skip top 40% so the circular top remains intact and clean)
+      ctx.fillStyle = '#18003a';  // matches sky gradient color near horizon
+      const numGaps = 4;
+      for (let i = 0; i < numGaps; i++) {
+        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;  // 0.4..1.0 range
+        const lineY = sunY - sunR * (1 - t);               // position within sun
+        ctx.fillRect(sunX - sunR, lineY - 1.5, sunR * 2, 3);
       }
-      ctx.restore();
+      ctx.restore(); // inner half-circle clip
+
+      ctx.restore(); // outer sky-zone clip
 
       // ── Grid floor ───────────────────────────────────────────
       this._gridOffset += 0.003;
