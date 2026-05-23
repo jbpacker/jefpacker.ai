@@ -14,7 +14,7 @@ window.RRT_THEMES = {
     _gridOffset: 0,
     drawBg(ctx, canvas) {
       const W = canvas.width, H = canvas.height;
-      const hor = H * this.cfg.skyZone;
+      const hor = H * (window.RRT ? RRT.cfg.skyZone : this.cfg.skyZone);
 
       // ── Sky gradient ─────────────────────────────────────────
       const sky = ctx.createLinearGradient(0, 0, 0, hor);
