@@ -244,12 +244,17 @@
     var syncStart = Date.now();
     var phaseStart = Date.now() - 3500;
     function tick() {
-      lat += (Math.random() * 0.2 - 0.1);
-      lon += (Math.random() * 0.2 - 0.1);
-      lat = Math.max(0, Math.min(90, lat));
-      lon = Math.max(0, Math.min(180, lon));
-      lat = Math.round(lat * 10) / 10;
-      lon = Math.round(lon * 10) / 10;
+      if (window.RRT && RRT.target && RRT.canvas && RRT.canvas.width > 0) {
+        var normX = RRT.target.position.x / RRT.canvas.width;
+        var normY = RRT.target.position.y / RRT.canvas.height;
+        lat = 23.7 + (0.5 - normY) * 10 + (Math.random() * 0.2 - 0.1);
+        lon = 118.2 + (normX - 0.5) * 10 + (Math.random() * 0.2 - 0.1);
+      } else {
+        lat += (Math.random() * 0.2 - 0.1);
+        lon += (Math.random() * 0.2 - 0.1);
+      }
+      lat = Math.max(0, Math.min(90, Math.round(lat * 10) / 10));
+      lon = Math.max(0, Math.min(180, Math.round(lon * 10) / 10));
       var latEl = document.getElementById('v-lat');
       var lonEl = document.getElementById('v-lon');
       if (latEl) latEl.textContent = lat.toFixed(1);
@@ -258,8 +263,14 @@
     function animBars() {
       var syncEl = document.getElementById('v-sync');
       var phaseEl = document.getElementById('v-phase');
-      if (syncEl) syncEl.style.width = ((((Date.now() - syncStart) % 12000) / 12000) * 100) + '%';
-      if (phaseEl) phaseEl.style.width = ((((Date.now() - phaseStart) % 7000) / 7000) * 100) + '%';
+      if (syncEl) {
+        var sw = (((Date.now() - syncStart) % 12000) / 12000) * 100 + (Math.random() * 3 - 1.5);
+        syncEl.style.width = Math.max(0, Math.min(100, sw)) + '%';
+      }
+      if (phaseEl) {
+        var pw = (((Date.now() - phaseStart) % 7000) / 7000) * 100 + (Math.random() * 3 - 1.5);
+        phaseEl.style.width = Math.max(0, Math.min(100, pw)) + '%';
+      }
       vaporRaf = requestAnimationFrame(animBars);
     }
     tick();
