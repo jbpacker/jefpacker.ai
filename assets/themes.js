@@ -6,7 +6,7 @@ window.RRT_THEMES = {
   // ============================================================
   vapor: {
     name: 'vapor',
-    cfg: { skyZone: 0.44 },
+    cfg: { skyZone: 0.70 },
     treeColor: 'rgba(120, 90, 180, 0.32)',
     treeWidth: 1,
     pathColor: '#ff2d95',
@@ -44,26 +44,30 @@ window.RRT_THEMES = {
       ctx.arc(sunX, sunY, sunR * 2.2, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── Retrowave sun (half-circle) ───────────────────────────
-      const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY + sunR * 0.15);
-      sunGrad.addColorStop(0,   '#ffee00');
-      sunGrad.addColorStop(0.45,'#ff8800');
-      sunGrad.addColorStop(1,   '#ff2d95');
+      // ── Retrowave sun (arc strips with transparent gaps) ─────
+      const stripColors = ['#ffee00', '#ffcc00', '#ff9900', '#ff6600', '#ff3d44', '#ff2d80', '#ff2d95'];
+      const numStrips = stripColors.length;
+      const totalBands = numStrips * 2 - 1; // alternating color/gap = 13
       ctx.save();
+      // Clip to upper half of circle so we don't draw below horizon
       ctx.beginPath();
-      ctx.arc(sunX, sunY, sunR, Math.PI, 0); // top half-circle
-      ctx.closePath();
-      ctx.fillStyle = sunGrad;
-      ctx.fill();
-
-      // Horizontal cutout lines across the sun
-      ctx.fillStyle = '#050018';
-      const numCuts = 6;
-      for (let i = 0; i < numCuts; i++) {
-        const t = (i + 1) / (numCuts + 1);
-        const lineY = sunY - sunR * (1 - t);
-        const halfW = Math.sqrt(Math.max(0, sunR * sunR - (sunY - lineY) * (sunY - lineY)));
-        ctx.fillRect(sunX - halfW, lineY, halfW * 2, 3);
+      ctx.rect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
+      ctx.clip();
+      for (let i = 0; i < totalBands; i++) {
+        if (i % 2 === 1) continue; // skip gap bands
+        const stripIdx = i / 2;
+        const y0 = sunY - sunR + (i / totalBands) * sunR;
+        const y1 = sunY - sunR + ((i + 1) / totalBands) * sunR;
+        const hw0 = Math.sqrt(Math.max(0, sunR * sunR - (sunY - y0) * (sunY - y0)));
+        const hw1 = Math.sqrt(Math.max(0, sunR * sunR - (sunY - y1) * (sunY - y1)));
+        ctx.beginPath();
+        ctx.moveTo(sunX - hw0, y0);
+        ctx.lineTo(sunX + hw0, y0);
+        ctx.lineTo(sunX + hw1, y1);
+        ctx.lineTo(sunX - hw1, y1);
+        ctx.closePath();
+        ctx.fillStyle = stripColors[stripIdx];
+        ctx.fill();
       }
       ctx.restore();
 
@@ -75,14 +79,14 @@ window.RRT_THEMES = {
       const numHLines = 7;
 
       ctx.save();
-      ctx.globalAlpha = 0.45;
+      ctx.globalAlpha = 0.65;
 
       // Vertical lines
       for (let i = 0; i <= numVLines; i++) {
         const t = i / numVLines; // 0..1
         const bx = W * t;       // spread at bottom
         const vLineGrad = ctx.createLinearGradient(vp.x, vp.y, bx, H);
-        vLineGrad.addColorStop(0, 'rgba(255, 45, 149, 0)');
+        vLineGrad.addColorStop(0, 'rgba(255, 45, 149, 0.2)');
         vLineGrad.addColorStop(0.3, 'rgba(255, 45, 149, 0.5)');
         vLineGrad.addColorStop(1, 'rgba(0, 240, 255, 0.7)');
         ctx.strokeStyle = vLineGrad;
@@ -103,8 +107,8 @@ window.RRT_THEMES = {
         const mix = frac;
         const hLineGrad = ctx.createLinearGradient(0, y, W, y);
         hLineGrad.addColorStop(0,   'rgba(0, 240, 255, 0)');
-        hLineGrad.addColorStop(0.15, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.55)`);
-        hLineGrad.addColorStop(0.85, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.55)`);
+        hLineGrad.addColorStop(0.15, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.60)`);
+        hLineGrad.addColorStop(0.85, `rgba(${Math.round(255*(1-mix))}, ${Math.round(45*mix + 240*(1-mix))}, ${Math.round(149*(1-mix) + 255*mix)}, 0.60)`);
         hLineGrad.addColorStop(1,   'rgba(0, 240, 255, 0)');
         ctx.strokeStyle = hLineGrad;
         ctx.lineWidth = 1;
