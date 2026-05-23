@@ -99,7 +99,7 @@ window.RRT_THEMES = {
       const hOffset = this._gridOffset % 1;
 
       // Static horizon seam — closes the gap between farthest animated line and horizon
-      ctx.strokeStyle = 'rgba(255,45,149,0.18)';
+      ctx.strokeStyle = 'rgba(255,45,149,0.65)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, hor);
@@ -117,7 +117,7 @@ window.RRT_THEMES = {
         const r = Math.round(255 * (1 - d));
         const g = Math.round(45  * (1 - d) + 240 * d);
         const b = Math.round(149 * (1 - d) + 255 * d);
-        const a = (0.25 + d * 0.45).toFixed(2);
+        const a = (0.45 + d * 0.4).toFixed(2);
 
         const hGrad = ctx.createLinearGradient(0, y, W, y);
         hGrad.addColorStop(0,    'rgba(0,0,0,0)');
