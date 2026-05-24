@@ -150,23 +150,38 @@ window.RRT_THEMES = {
       const numGaps = 4;
       const lineH = Math.max(1.5, sunR * 0.05);
 
+      // Build y-strips of sun to paint, skipping gap line ranges.
+      // Half-circle clip handles the circular boundary so strips never extend
+      // past the sun outline.
+      const gapRanges = [];
+      for (let i = 0; i < numGaps; i++) {
+        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
+        const lineY = sunY - sunR * (1 - t);
+        gapRanges.push([lineY - lineH / 2, lineY + lineH / 2]);
+      }
+      gapRanges.sort((a, b) => a[0] - b[0]);
+      const strips = [];
+      let yCur = sunY - sunR;
+      for (const [gt, gb] of gapRanges) {
+        if (gt > yCur) strips.push([yCur, gt]);
+        yCur = gb;
+      }
+      if (yCur < sunY) strips.push([yCur, sunY]);
+
       ctx.save();
       ctx.beginPath();
       ctx.arc(sunX, sunY, sunR, Math.PI, 0);
       ctx.closePath();
-      for (let i = 0; i < numGaps; i++) {
-        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
-        const lineY = sunY - sunR * (1 - t);
-        ctx.rect(sunX - sunR, lineY - lineH / 2, sunR * 2, lineH);
-      }
-      ctx.clip('evenodd');
+      ctx.clip();
 
       const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY);
       sunGrad.addColorStop(0,    '#ffee00');
       sunGrad.addColorStop(0.45, '#ff8800');
       sunGrad.addColorStop(1,    '#ff2d95');
       ctx.fillStyle = sunGrad;
-      ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
+      for (const [sTop, sBot] of strips) {
+        ctx.fillRect(sunX - sunR, sTop, sunR * 2, sBot - sTop);
+      }
       ctx.restore();
       ctx.restore();
 
