@@ -160,25 +160,16 @@ window.RRT_THEMES = {
       ctx.fillStyle = sunGrad;
       ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
 
+      const lineH = Math.max(1.5, sunR * 0.05);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0,0,0,1)';
       const numGaps = 4;
       for (let i = 0; i < numGaps; i++) {
         const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
         const lineY = sunY - sunR * (1 - t);
-        const gt = lineY / hor;
-        let sr, sg, sb;
-        if (gt <= 0.6) {
-          const f = gt / 0.6;
-          sr = Math.round(5  + 19 * f); sg = 0; sb = Math.round(24 + 34 * f);
-        } else {
-          const f = (gt - 0.6) / 0.4;
-          sr = Math.round(24 + (255 - 24) * f * 0.4);
-          sg = Math.round(45 * f * 0.4);
-          sb = Math.round(58 + (149 - 58) * f * 0.4);
-        }
-        const lineH = Math.max(1.5, sunR * 0.05);
-        ctx.fillStyle = `rgb(${sr},${sg},${sb})`;
         ctx.fillRect(sunX - sunR, lineY - lineH / 2, sunR * 2, lineH);
       }
+      ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
       ctx.restore();
 
