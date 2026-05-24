@@ -22,14 +22,15 @@ window.RRT_THEMES = {
       sky.addColorStop(0.6, '#18003a');
       sky.addColorStop(1,   'rgba(255, 45, 149, 0.4)');
       ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, W, hor + 3);  // extend 3px past horizon so sky covers grid seam
+      const skyBleed = H * 0.04;
+      ctx.fillRect(0, 0, W, hor + skyBleed);
 
       // ── Floor background ─────────────────────────────────────
-      const floor = ctx.createLinearGradient(0, hor + 3, 0, H);
+      const floor = ctx.createLinearGradient(0, hor + skyBleed, 0, H);
       floor.addColorStop(0, '#220055');
       floor.addColorStop(1, '#0a0414');
       ctx.fillStyle = floor;
-      ctx.fillRect(0, hor + 3, W, H - hor - 3);
+      ctx.fillRect(0, hor + skyBleed, W, H - hor - skyBleed);
 
       // ── Sun (clipped to sky zone so it never bleeds below horizon) ────
       const sunR = Math.min(W, H) * 0.13;
@@ -110,14 +111,6 @@ window.RRT_THEMES = {
       const K = floorH;
       const numHLines = 200;
       const hOffset = this._gridOffset % 1;
-
-      // Static horizon seam — closes the gap between farthest animated line and horizon
-      ctx.strokeStyle = 'rgba(255,45,149,0.65)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, hor);
-      ctx.lineTo(W, hor);
-      ctx.stroke();
 
       for (let i = 1; i <= numHLines; i++) {
         const Z = i - hOffset;
