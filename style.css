@@ -1282,11 +1282,12 @@ button.patent-row {
 @media (max-width: 820px) {
   [data-theme="classic"] .classic-overlay {
     padding-block-start: var(--space-md);
+    padding-block-end: var(--space-lg);
     padding-inline: var(--space-md);
   }
 
   [data-theme="classic"] .classic-hero {
-    max-width: 68%;
+    max-width: 75%;
   }
 }
 
