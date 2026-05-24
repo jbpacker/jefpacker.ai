@@ -46,7 +46,7 @@ window.RRT_THEMES = {
       // Animating by subtracting offset from Z makes near lines rush forward fast,
       // far lines creep slowly — correct perspective speed behaviour.
       const K = floorH;
-      const numHLines = 200;
+      const numHLines = 100;
       const hOffset = this._gridOffset % 1;
 
       for (let i = 1; i <= numHLines; i++) {
@@ -62,12 +62,6 @@ window.RRT_THEMES = {
         const b = Math.round(149 * (1 - d) + 255 * d);
         const a = (0.45 + d * 0.4).toFixed(2);
 
-        // Floor background color at this depth — used for edge fade target
-        // so edges blend INTO the floor rather than going transparent over it
-        const fr = Math.round(34 - 24 * d);
-        const fg = Math.round(4 * d);
-        const fb = Math.round(85 - 65 * d);
-
         // Bottom 40% of floor (d > 0.6): no fade, full edge-to-edge.
         const full_edge_percent = 0.7;
         const fade_percent = 1 - full_edge_percent;
@@ -78,10 +72,10 @@ window.RRT_THEMES = {
           ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
         } else {
           const hGrad = ctx.createLinearGradient(0, y, W, y);
-          hGrad.addColorStop(0,        `rgb(${fr},${fg},${fb})`);
-          hGrad.addColorStop(fade,     `rgba(${r},${g},${b},${a})`);
-          hGrad.addColorStop(1 - fade, `rgba(${r},${g},${b},${a})`);
-          hGrad.addColorStop(1,        `rgb(${fr},${fg},${fb})`);
+          hGrad.addColorStop(0,          'rgba(0,0,0,0)');
+          hGrad.addColorStop(fade,       `rgba(${r},${g},${b},${a})`);
+          hGrad.addColorStop(1 - fade,   `rgba(${r},${g},${b},${a})`);
+          hGrad.addColorStop(1,          'rgba(0,0,0,0)');
           ctx.strokeStyle = hGrad;
         }
         ctx.beginPath();
