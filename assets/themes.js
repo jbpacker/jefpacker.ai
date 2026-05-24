@@ -68,13 +68,26 @@ window.RRT_THEMES = {
       ctx.fillStyle = sunGrad;
       ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
 
-      // 4 horizontal gap lines in the lower 60% of the sun
-      // (skip top 40% so the circular top remains intact and clean)
-      ctx.fillStyle = '#18003a';  // matches sky gradient color near horizon
+      // 4 horizontal gap lines — color sampled from sky gradient at each line's y
       const numGaps = 4;
       for (let i = 0; i < numGaps; i++) {
-        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;  // 0.4..1.0 range
-        const lineY = sunY - sunR * (1 - t);               // position within sun
+        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
+        const lineY = sunY - sunR * (1 - t);
+        // Sky gradient: y=0 → #050018, y=0.6*hor → #18003a, y=hor → rgba(255,45,149,0.4) over dark
+        const gt = lineY / hor;  // 0..1 position in sky gradient
+        let sr, sg, sb;
+        if (gt <= 0.6) {
+          const f = gt / 0.6;
+          sr = Math.round(5  + 19 * f);
+          sg = 0;
+          sb = Math.round(24 + 34 * f);
+        } else {
+          const f = (gt - 0.6) / 0.4;
+          sr = Math.round(24 + (255 - 24) * f * 0.4);
+          sg = Math.round(45 * f * 0.4);
+          sb = Math.round(58 + (149 - 58) * f * 0.4);
+        }
+        ctx.fillStyle = `rgb(${sr},${sg},${sb})`;
         ctx.fillRect(sunX - sunR, lineY - 1.5, sunR * 2, 3);
       }
       ctx.restore(); // inner half-circle clip
