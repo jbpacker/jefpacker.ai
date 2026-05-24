@@ -1189,6 +1189,83 @@ button.patent-row {
 [data-theme="vapor"] .tele-vapor { display: block; }
 [data-theme="vapor"] .tele:not(.tele-vapor) { display: none; }
 
+/* ============================================================
+   Classic theme overlay — full-screen canvas + hero overlay
+   ============================================================ */
+
+/* Hidden by default on all themes */
+.classic-overlay { display: none; }
+
+/* Classic theme: collapse sidebar column and statusbar row */
+[data-theme="classic"] .app { grid-template-rows: 48px 1fr; }
+[data-theme="classic"] .main { grid-template-columns: 1fr; }
+
+/* Classic theme: hide sidebar-era elements */
+[data-theme="classic"] .sidebar,
+[data-theme="classic"] .mobile-bio,
+[data-theme="classic"] .hud,
+[data-theme="classic"] .canvas-page-nav,
+[data-theme="classic"] .statusbar { display: none; }
+
+/* Classic theme: show overlay */
+[data-theme="classic"] .classic-overlay {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  padding-inline: var(--space-xl);
+  padding-block: var(--space-2xl);
+}
+
+.classic-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.classic-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  pointer-events: auto;
+}
+
+.classic-tagline {
+  font-family: var(--sans);
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
+  color: var(--muted);
+  max-width: 48ch;
+  line-height: 1.6;
+  pointer-events: auto;
+}
+
+.classic-socials {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: auto;
+  pointer-events: none;
+}
+
+.classic-social-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  text-decoration: none;
+  pointer-events: auto;
+  transition: color 0.15s ease;
+}
+
+.classic-social-link:hover { color: var(--text); }
+.classic-social-link svg { width: 24px; height: 24px; fill: currentColor; }
+
 /* Vapor bars */
 .vapor-bar-row {
   display: flex;
