@@ -22,7 +22,7 @@ window.RRT_THEMES = {
       sky.addColorStop(0.6, '#18003a');
       sky.addColorStop(1,   'rgba(255, 45, 149, 0.4)');
       ctx.fillStyle = sky;
-      const skyBleed = H * 0.04;
+      const skyBleed = H * 0.002;
       ctx.fillRect(0, 0, W, hor + skyBleed);
 
       // ── Floor background ─────────────────────────────────────
@@ -31,69 +31,6 @@ window.RRT_THEMES = {
       floor.addColorStop(1, '#0a0414');
       ctx.fillStyle = floor;
       ctx.fillRect(0, hor + skyBleed, W, H - hor - skyBleed);
-
-      // ── Sun (clipped to sky zone so it never bleeds below horizon) ────
-      const sunR = Math.min(W, H) * 0.13;
-      const sunX = W / 2;
-      const sunY = hor;  // center sits exactly at horizon
-
-      ctx.save();
-      // Clip everything sun-related to sky zone only (y < hor)
-      // This makes the sun appear behind the floor/grid with a clean horizon cut
-      ctx.beginPath();
-      ctx.rect(0, 0, W, hor);
-      ctx.clip();
-
-      // Glow behind sun
-      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 2.4);
-      glow.addColorStop(0,   'rgba(255, 200, 0, 0.35)');
-      glow.addColorStop(0.4, 'rgba(255, 45, 149, 0.2)');
-      glow.addColorStop(1,   'rgba(255, 45, 149, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, sunR * 2.4, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Sun: clip to half-circle, fill gradient, then draw gap lines
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, sunR, Math.PI, 0);  // upper half-circle path
-      ctx.closePath();
-      ctx.clip();
-
-      // Gradient fill (yellow → orange → magenta top to bottom)
-      const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY);
-      sunGrad.addColorStop(0,    '#ffee00');
-      sunGrad.addColorStop(0.45, '#ff8800');
-      sunGrad.addColorStop(1,    '#ff2d95');
-      ctx.fillStyle = sunGrad;
-      ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
-
-      // 4 horizontal gap lines — color sampled from sky gradient at each line's y
-      const numGaps = 4;
-      for (let i = 0; i < numGaps; i++) {
-        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
-        const lineY = sunY - sunR * (1 - t);
-        // Sky gradient: y=0 → #050018, y=0.6*hor → #18003a, y=hor → rgba(255,45,149,0.4) over dark
-        const gt = lineY / hor;  // 0..1 position in sky gradient
-        let sr, sg, sb;
-        if (gt <= 0.6) {
-          const f = gt / 0.6;
-          sr = Math.round(5  + 19 * f);
-          sg = 0;
-          sb = Math.round(24 + 34 * f);
-        } else {
-          const f = (gt - 0.6) / 0.4;
-          sr = Math.round(24 + (255 - 24) * f * 0.4);
-          sg = Math.round(45 * f * 0.4);
-          sb = Math.round(58 + (149 - 58) * f * 0.4);
-        }
-        ctx.fillStyle = `rgb(${sr},${sg},${sb})`;
-        ctx.fillRect(sunX - sunR, lineY - 1.5, sunR * 2, 3);
-      }
-      ctx.restore(); // inner half-circle clip
-
-      ctx.restore(); // outer sky-zone clip
 
       // ── Grid floor ───────────────────────────────────────────────
       this._gridOffset += 0.015;
@@ -189,6 +126,59 @@ window.RRT_THEMES = {
         ctx.stroke();
       }
 
+      ctx.restore();
+
+      // ── Sun (drawn after grid so it appears on top) ────────────
+      const sunR = Math.min(W, H) * 0.13;
+      const sunX = W / 2;
+      const sunY = hor + skyBleed;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, W, hor + skyBleed);
+      ctx.clip();
+
+      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 2.4);
+      glow.addColorStop(0,   'rgba(255, 200, 0, 0.35)');
+      glow.addColorStop(0.4, 'rgba(255, 45, 149, 0.2)');
+      glow.addColorStop(1,   'rgba(255, 45, 149, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunR * 2.4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunR, Math.PI, 0);
+      ctx.closePath();
+      ctx.clip();
+
+      const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY);
+      sunGrad.addColorStop(0,    '#ffee00');
+      sunGrad.addColorStop(0.45, '#ff8800');
+      sunGrad.addColorStop(1,    '#ff2d95');
+      ctx.fillStyle = sunGrad;
+      ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
+
+      const numGaps = 4;
+      for (let i = 0; i < numGaps; i++) {
+        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
+        const lineY = sunY - sunR * (1 - t);
+        const gt = lineY / hor;
+        let sr, sg, sb;
+        if (gt <= 0.6) {
+          const f = gt / 0.6;
+          sr = Math.round(5  + 19 * f); sg = 0; sb = Math.round(24 + 34 * f);
+        } else {
+          const f = (gt - 0.6) / 0.4;
+          sr = Math.round(24 + (255 - 24) * f * 0.4);
+          sg = Math.round(45 * f * 0.4);
+          sb = Math.round(58 + (149 - 58) * f * 0.4);
+        }
+        ctx.fillStyle = `rgb(${sr},${sg},${sb})`;
+        ctx.fillRect(sunX - sunR, lineY - 1.5, sunR * 2, 3);
+      }
+      ctx.restore();
       ctx.restore();
 
       // // ── Palm tree silhouettes ─────────────────────────────────
