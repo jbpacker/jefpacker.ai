@@ -157,10 +157,11 @@ window.RRT_THEMES = {
       // Vertical lines — equally spaced in world space at the bottom (S px apart),
       // converging to VP. Side columns that miss the bottom edge are projected to
       // the left/right walls via ray-vs-wall intersection.
-      const numBottomLines = 20;
+      const numBottomLines = 3;
+      const numSideLines = 120;
       const S = W / numBottomLines;  // equal column spacing at bottom
 
-      for (let n = -80; n <= 80; n++) {
+      for (let n = -numSideLines; n <= numSideLines; n++) {
         const bottomX = W / 2 + n * S;
         let ex, ey;
 

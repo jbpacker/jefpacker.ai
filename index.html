@@ -94,14 +94,6 @@
         <div class="tele-frame">
           <div class="tele-top">╭─ <b>∇ grid//lock</b><span class="tele-fill"></span>╮</div>
           <div class="tele-body">
-            <div class="tele-row">
-              <span class="tele-k">lat</span>
-              <span class="tele-v"><span id="v-lat">23.7</span>°N</span>
-            </div>
-            <div class="tele-row">
-              <span class="tele-k">lon</span>
-              <span class="tele-v"><span id="v-lon">118.2</span>°W</span>
-            </div>
             <div class="vapor-bar-row">
               <span class="vapor-bar-label">sync</span>
               <div class="vapor-bar-track"><div class="vapor-bar-fill" id="v-sync"></div></div>
@@ -236,49 +228,33 @@
   });
 
   // Theme switch
-  var vaporInterval = null;
   var vaporRaf = null;
   function startVaporTelemetry() {
-    if (vaporInterval) return;  // already running
-    var lat = 23.7, lon = 118.2;
-    var syncStart = Date.now();
-    var phaseStart = Date.now() - 3500;
-    function tick() {
-      if (window.RRT && RRT.target && RRT.canvas && RRT.canvas.width > 0) {
-        var normX = RRT.target.position.x / RRT.canvas.width;
-        var normY = RRT.target.position.y / RRT.canvas.height;
-        lat = 23.7 + (0.5 - normY) * 10 + (Math.random() * 0.2 - 0.1);
-        lon = 118.2 + (normX - 0.5) * 10 + (Math.random() * 0.2 - 0.1);
-      } else {
-        lat += (Math.random() * 0.2 - 0.1);
-        lon += (Math.random() * 0.2 - 0.1);
-      }
-      lat = Math.max(0, Math.min(90, Math.round(lat * 10) / 10));
-      lon = Math.max(0, Math.min(180, Math.round(lon * 10) / 10));
-      var latEl = document.getElementById('v-lat');
-      var lonEl = document.getElementById('v-lon');
-      if (latEl) latEl.textContent = lat.toFixed(1);
-      if (lonEl) lonEl.textContent = lon.toFixed(1);
-    }
+    if (vaporRaf) return;  // already running
+    var phaseVal = 50, phaseVel = 0.4;
     function animBars() {
       var syncEl = document.getElementById('v-sync');
       var phaseEl = document.getElementById('v-phase');
       if (syncEl) {
-        var sw = (((Date.now() - syncStart) % 12000) / 12000) * 100 + (Math.random() * 3 - 1.5);
-        syncEl.style.width = Math.max(0, Math.min(100, sw)) + '%';
+        // Normalized distance to RRT target
+        var dist = (latest && latest.dist) ? latest.dist : 0;
+        var norm = Math.min(100, dist / 550 * 100) + (Math.random() * 5 - 2.5);
+        syncEl.style.width = Math.max(0, Math.min(100, norm)) + '%';
       }
       if (phaseEl) {
-        var pw = (((Date.now() - phaseStart) % 7000) / 7000) * 100 + (Math.random() * 3 - 1.5);
-        phaseEl.style.width = Math.max(0, Math.min(100, pw)) + '%';
+        // Random walk: velocity drifts, bounces at edges
+        phaseVel += (Math.random() * 0.6 - 0.3);
+        phaseVel = Math.max(-2, Math.min(2, phaseVel));
+        phaseVal += phaseVel;
+        if (phaseVal <= 0 || phaseVal >= 100) phaseVel *= -0.8;
+        phaseVal = Math.max(0, Math.min(100, phaseVal));
+        phaseEl.style.width = phaseVal + '%';
       }
       vaporRaf = requestAnimationFrame(animBars);
     }
-    tick();
-    vaporInterval = setInterval(tick, 5000 + Math.random() * 2000);
     vaporRaf = requestAnimationFrame(animBars);
   }
   function stopVaporTelemetry() {
-    if (vaporInterval) { clearInterval(vaporInterval); vaporInterval = null; }
     if (vaporRaf) { cancelAnimationFrame(vaporRaf); vaporRaf = null; }
   }
 
