@@ -193,6 +193,7 @@
 <script>
 (function () {
   const container = document.getElementById('rrt');
+  var latest = { nodes: 0, dist: 0 };
 
   requestAnimationFrame(function () {
     const theme = document.documentElement.getAttribute('data-theme') || 'mission';
@@ -211,7 +212,6 @@
       sparkEl.appendChild(b);
     }
     let history = new Array(SPARK_N).fill(0);
-    let latest  = { nodes: 0, dist: 0 };
     RRT.onStats = function (s) { latest = s; };
     setInterval(function () {
       elNodes.textContent = latest.nodes.toLocaleString();
