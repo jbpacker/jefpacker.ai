@@ -597,9 +597,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Nav drawer — mobile overlay (index only) */
 .nav-drawer {
   position: fixed;
-  inset: 48px 0 0 0;
+  top: 48px;
+  left: 0;
+  right: 0;
   background: var(--bg);
   border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   z-index: 200;
   padding: 20px;
   display: flex;
@@ -608,6 +612,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .nav-drawer[hidden] { display: none; }
+
+.nav-backdrop {
+  position: fixed;
+  inset: 48px 0 0 0;
+  z-index: 199;
+  background: transparent;
+}
+.nav-backdrop[hidden] { display: none; }
 
 .drawer-theme {
   display: flex;
@@ -638,7 +650,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .drawer-nav a {
   padding: 14px 0;
   border-bottom: 1px solid var(--border-soft);
-  font-size: 13px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);

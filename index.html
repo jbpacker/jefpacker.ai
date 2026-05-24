@@ -195,6 +195,7 @@
 </div>
 
 <!-- Mobile nav drawer -->
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
 <div class="nav-drawer" id="nav-drawer" hidden aria-label="Navigation menu">
   <div class="drawer-theme" id="drawer-theme">
     <button data-set="mission" class="on">~/mission</button>
@@ -307,13 +308,28 @@
   // Hamburger
   var toggle = document.getElementById('nav-toggle');
   var drawer = document.getElementById('nav-drawer');
+  var backdrop = document.getElementById('nav-backdrop');
+
+  function closeMenu() {
+    drawer.hidden = true;
+    backdrop.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = '☰';
+  }
 
   toggle.addEventListener('click', function () {
     var open = !drawer.hidden;
-    drawer.hidden = open;
-    toggle.setAttribute('aria-expanded', String(!open));
-    toggle.textContent = open ? '☰' : '✕';
+    if (open) {
+      closeMenu();
+    } else {
+      drawer.hidden = false;
+      backdrop.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.textContent = '✕';
+    }
   });
+
+  backdrop.addEventListener('click', closeMenu);
 }());
 </script>
 </body>
