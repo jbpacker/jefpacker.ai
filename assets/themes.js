@@ -120,8 +120,10 @@ window.RRT_THEMES = {
         const a = (0.45 + d * 0.4).toFixed(2);
 
         // Bottom 40% of floor (d > 0.6): no fade, full edge-to-edge.
+        const full_edge_percent = 0.7;
+        const fade_percent = 1 - full_edge_percent;
         // Top 60% (d <= 0.6): linear taper toward horizon, max 0.4 at VP.
-        const fade = d > 0.6 ? 0 : (0.6 - d) / 0.6 * 0.4;
+        const fade = d > fade_percent ? 0 : (fade_percent - d) / fade_percent * full_edge_percent;
         ctx.lineWidth = 1;
         if (fade < 0.005) {
           ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
@@ -139,25 +141,30 @@ window.RRT_THEMES = {
         ctx.stroke();
       }
 
-      // Vertical lines — radiate from VP to entire floor perimeter:
-      // left edge (bottom→top) + bottom edge (left→right) + right edge (top→bottom)
+      // Vertical lines — evenly spaced by angle from VP, not by perimeter distance.
+      // Perimeter spacing clusters lines at corners; angular spacing is visually uniform.
       const numVLines = 50;
-      const sideH = floorH - 2;  // stop 2px shy of horizon to avoid degenerate lines
-      const perimTotal = sideH + W + sideH;
+      const thetaL = Math.atan2(-W / 2, 2);   // ray to top of left edge
+      const thetaR = Math.atan2( W / 2, 2);   // ray to top of right edge
 
       for (let i = 0; i <= numVLines; i++) {
-        const p = (i / numVLines) * perimTotal;
-        let ex, ey;
-        if (p <= sideH) {
-          ex = 0;
-          ey = H - p;                          // left edge: H → hor+2
-        } else if (p <= sideH + W) {
-          ex = p - sideH;
-          ey = H;                              // bottom edge: 0 → W
+        const theta = thetaL + (i / numVLines) * (thetaR - thetaL);
+        const sinT = Math.sin(theta);
+        const cosT = Math.cos(theta);
+
+        // Find where ray hits floor boundary (left wall, bottom, or right wall)
+        const tBottom = floorH / cosT;
+        let t;
+        if (sinT < -1e-6) {
+          t = Math.min(-W / 2 / sinT, tBottom);
+        } else if (sinT > 1e-6) {
+          t = Math.min( W / 2 / sinT, tBottom);
         } else {
-          ex = W;
-          ey = H - (p - sideH - W);           // right edge: H → hor+2
+          t = tBottom;
         }
+
+        const ex = W / 2 + t * sinT;
+        const ey = hor + t * cosT;
 
         const onBottom = ey >= H - 1;
         const endAlpha = onBottom ? 0.65 : 0.35;
