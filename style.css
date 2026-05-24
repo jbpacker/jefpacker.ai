@@ -1134,7 +1134,7 @@ button.patent-row {
   }
 
   .classic-hero {
-    padding: var(--space-md);
+    padding: var(--space-sm);
     gap: var(--space-sm);
   }
 }
@@ -1236,7 +1236,7 @@ button.patent-row {
   background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(2px);
   border: 1px solid var(--border);
-  padding: var(--space-lg);
+  padding: var(--space-md);
   border-radius: var(--border-radius);
 }
 
