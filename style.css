@@ -1137,6 +1137,11 @@ button.patent-row {
     padding: var(--space-md);
     gap: var(--space-sm);
   }
+
+  [data-theme="classic"] .classic-overlay {
+    padding-block-start: var(--space-md);
+    padding-inline: var(--space-md);
+  }
 }
 
 /* ============================================================
