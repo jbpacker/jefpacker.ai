@@ -22,14 +22,14 @@ window.RRT_THEMES = {
       sky.addColorStop(0.6, '#18003a');
       sky.addColorStop(1,   'rgba(255, 45, 149, 0.4)');
       ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, W, hor);
+      ctx.fillRect(0, 0, W, hor + 3);  // extend 3px past horizon so sky covers grid seam
 
       // ── Floor background ─────────────────────────────────────
-      const floor = ctx.createLinearGradient(0, hor, 0, H);
+      const floor = ctx.createLinearGradient(0, hor + 3, 0, H);
       floor.addColorStop(0, '#220055');
       floor.addColorStop(1, '#0a0414');
       ctx.fillStyle = floor;
-      ctx.fillRect(0, hor, W, H - hor);
+      ctx.fillRect(0, hor + 3, W, H - hor - 3);
 
       // ── Sun (clipped to sky zone so it never bleeds below horizon) ────
       const sunR = Math.min(W, H) * 0.13;
