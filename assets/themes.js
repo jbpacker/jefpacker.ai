@@ -154,30 +154,32 @@ window.RRT_THEMES = {
         ctx.stroke();
       }
 
-      // Vertical lines — evenly spaced by angle from VP, not by perimeter distance.
-      // Perimeter spacing clusters lines at corners; angular spacing is visually uniform.
-      const numVLines = 50;
-      const thetaL = Math.atan2(-W / 2, 2);   // ray to top of left edge
-      const thetaR = Math.atan2( W / 2, 2);   // ray to top of right edge
+      // Vertical lines — equally spaced in world space at the bottom (S px apart),
+      // converging to VP. Side columns that miss the bottom edge are projected to
+      // the left/right walls via ray-vs-wall intersection.
+      const numBottomLines = 20;
+      const S = W / numBottomLines;  // equal column spacing at bottom
 
-      for (let i = 0; i <= numVLines; i++) {
-        const theta = thetaL + (i / numVLines) * (thetaR - thetaL);
-        const sinT = Math.sin(theta);
-        const cosT = Math.cos(theta);
+      for (let n = -80; n <= 80; n++) {
+        const bottomX = W / 2 + n * S;
+        let ex, ey;
 
-        // Find where ray hits floor boundary (left wall, bottom, or right wall)
-        const tBottom = floorH / cosT;
-        let t;
-        if (sinT < -1e-6) {
-          t = Math.min(-W / 2 / sinT, tBottom);
-        } else if (sinT > 1e-6) {
-          t = Math.min( W / 2 / sinT, tBottom);
+        if (bottomX >= 0 && bottomX <= W) {
+          ex = bottomX;
+          ey = H;
+        } else if (bottomX < 0) {
+          // Ray from VP to (bottomX, H) — find where it crosses x=0
+          const t = (W / 2) / (W / 2 - bottomX);
+          ey = hor + t * floorH;
+          if (ey < hor + 3) continue;
+          ex = 0;
         } else {
-          t = tBottom;
+          // Ray crosses x=W
+          const t = (W / 2) / (bottomX - W / 2);
+          ey = hor + t * floorH;
+          if (ey < hor + 3) continue;
+          ex = W;
         }
-
-        const ex = W / 2 + t * sinT;
-        const ey = hor + t * cosT;
 
         const onBottom = ey >= H - 1;
         const endAlpha = onBottom ? 0.65 : 0.35;
