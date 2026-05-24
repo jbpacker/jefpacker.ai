@@ -1196,9 +1196,11 @@ button.patent-row {
 /* Hidden by default on all themes */
 .classic-overlay { display: none; }
 
-/* Classic theme: collapse sidebar column and statusbar row */
-[data-theme="classic"] .app { grid-template-rows: 48px 1fr; }
-[data-theme="classic"] .main { grid-template-columns: 1fr; }
+/* Classic theme: collapse sidebar column and statusbar row (desktop grid only — mobile uses flex) */
+@media (min-width: 821px) {
+  [data-theme="classic"] .app { grid-template-rows: 48px 1fr; }
+  [data-theme="classic"] .main { grid-template-columns: 1fr; }
+}
 
 /* Classic theme: hide sidebar-era elements */
 [data-theme="classic"] .sidebar,
