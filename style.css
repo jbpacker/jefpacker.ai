@@ -1227,6 +1227,7 @@ button.patent-row {
   gap: var(--space-lg);
   flex-shrink: 0;
   pointer-events: none;
+  align-self: flex-start;
   background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(6px);
   border: 1px solid var(--border);
