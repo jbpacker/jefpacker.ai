@@ -147,11 +147,19 @@ window.RRT_THEMES = {
       ctx.arc(sunX, sunY, sunR * 2.4, 0, Math.PI * 2);
       ctx.fill();
 
+      const numGaps = 4;
+      const lineH = Math.max(1.5, sunR * 0.05);
+
       ctx.save();
       ctx.beginPath();
       ctx.arc(sunX, sunY, sunR, Math.PI, 0);
       ctx.closePath();
-      ctx.clip();
+      for (let i = 0; i < numGaps; i++) {
+        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
+        const lineY = sunY - sunR * (1 - t);
+        ctx.rect(sunX - sunR, lineY - lineH / 2, sunR * 2, lineH);
+      }
+      ctx.clip('evenodd');
 
       const sunGrad = ctx.createLinearGradient(sunX, sunY - sunR, sunX, sunY);
       sunGrad.addColorStop(0,    '#ffee00');
@@ -159,17 +167,6 @@ window.RRT_THEMES = {
       sunGrad.addColorStop(1,    '#ff2d95');
       ctx.fillStyle = sunGrad;
       ctx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR);
-
-      const lineH = Math.max(1.5, sunR * 0.05);
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(0,0,0,1)';
-      const numGaps = 4;
-      for (let i = 0; i < numGaps; i++) {
-        const t = 0.4 + (i + 1) / (numGaps + 1) * 0.6;
-        const lineY = sunY - sunR * (1 - t);
-        ctx.fillRect(sunX - sunR, lineY - lineH / 2, sunR * 2, lineH);
-      }
-      ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
       ctx.restore();
 
