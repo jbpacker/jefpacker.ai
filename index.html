@@ -238,7 +238,7 @@
       if (syncEl) {
         // Normalized distance to RRT target
         var dist = (latest && latest.dist) ? latest.dist : 0;
-        var norm = Math.min(100, dist / 550 * 100) + (Math.random() * 5 - 2.5);
+        var norm = (100 - Math.min(100, dist / 550 * 100)) + (Math.random() * 5 - 2.5);
         syncEl.style.width = Math.max(0, Math.min(100, norm)) + '%';
       }
       if (phaseEl) {
