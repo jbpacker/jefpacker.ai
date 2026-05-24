@@ -175,8 +175,9 @@ window.RRT_THEMES = {
           sg = Math.round(45 * f * 0.4);
           sb = Math.round(58 + (149 - 58) * f * 0.4);
         }
+        const lineH = Math.max(1.5, sunR * 0.05);
         ctx.fillStyle = `rgb(${sr},${sg},${sb})`;
-        ctx.fillRect(sunX - sunR, lineY - 1.5, sunR * 2, 3);
+        ctx.fillRect(sunX - sunR, lineY - lineH / 2, sunR * 2, lineH);
       }
       ctx.restore();
       ctx.restore();
