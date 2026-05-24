@@ -1137,11 +1137,6 @@ button.patent-row {
     padding: var(--space-md);
     gap: var(--space-sm);
   }
-
-  [data-theme="classic"] .classic-overlay {
-    padding-block-start: var(--space-md);
-    padding-inline: var(--space-md);
-  }
 }
 
 /* ============================================================
@@ -1283,6 +1278,13 @@ button.patent-row {
 
 .classic-social-link:hover { color: var(--text); }
 .classic-social-link svg { width: 24px; height: 24px; fill: currentColor; }
+
+@media (max-width: 820px) {
+  [data-theme="classic"] .classic-overlay {
+    padding-block-start: var(--space-md);
+    padding-inline: var(--space-md);
+  }
+}
 
 /* Vapor bars */
 .vapor-bar-row {
