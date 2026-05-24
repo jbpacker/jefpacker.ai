@@ -1284,6 +1284,10 @@ button.patent-row {
     padding-block-start: var(--space-md);
     padding-inline: var(--space-md);
   }
+
+  [data-theme="classic"] .classic-hero {
+    max-width: 68%;
+  }
 }
 
 /* Vapor bars */
